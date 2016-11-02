@@ -1,0 +1,4 @@
+test:
+  override:
+    - mv tests_and_examples/examples/ .
+    - ruby tests_and_examples/run_query_tests.rb
