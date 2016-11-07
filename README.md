@@ -1,4 +1,5 @@
 # SlicingDice Official Ruby Client (v1.0)
+![](https://circleci.com/gh/SlicingDice/slicingdice-ruby/tree/master.svg?style=shield)
 
 Official Ruby client for [SlicingDice](http://www.slicingdice.com/), Data Warehouse and Analytics Database as a Service.
 
