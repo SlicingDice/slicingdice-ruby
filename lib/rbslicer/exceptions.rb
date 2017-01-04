@@ -47,6 +47,8 @@ module Exceptions
 
   class AuthInvalidRemoteException < SlicingDiceException; end
 
+  class CustomKeyInvalidFieldCreationException < SlicingDiceException; end
+
   class CustomKeyInvalidPermissionForFieldException < SlicingDiceException; end
 
   class CustomKeyInvalidOperationException < SlicingDiceException; end
@@ -54,6 +56,8 @@ module Exceptions
   class CustomKeyNotPermittedException < SlicingDiceException; end
 
   class CustomKeyRouteNotPermittedException < SlicingDiceException; end
+
+  class DemoApiInvalidEndpointException < SlicingDiceException; end
 
   # INTERNAL ERRORS
   class InternalServerException < SlicingDiceException; end
@@ -66,6 +70,14 @@ module Exceptions
   class RequestRateLimitException < SlicingDiceException; end
 
   class RequestInvalidJsonException < SlicingDiceException; end
+
+  class RequestInvalidHttpMethodException < SlicingDiceException; end
+
+  class RequestInvalidEndpointException < SlicingDiceException; end
+
+  class RequestIncorrectHttpException < SlicingDiceException; end
+
+  class RequestExceedLimitException < SlicingDiceException; end
 
   # ACCOUNT ERRORS
   class AccountMissingPaymentMethodException < SlicingDiceException; end
@@ -101,16 +113,26 @@ module Exceptions
 
   class FieldInvalidDescriptionException < SlicingDiceException; end
 
+  class FieldExceedDescriptionlengthException < SlicingDiceException; end
+
   class FieldInvalidCardinalityException < SlicingDiceException; end
 
   class FieldDecimalLimitException < SlicingDiceException; end
 
   class FieldRangeLimitException < SlicingDiceException; end
 
+  class FieldExceededMaxNameLenghtException < SlicingDiceException; end
+
+  class FieldExceededMaxApiNameLenghtException < SlicingDiceException; end
+
+  class FieldEmptyEntityIdException < SlicingDiceException; end
+
+  class FieldExceededPermitedValueException < SlicingDiceException; end
+
   class FieldInvalidApiNameException < SlicingDiceException; end
 
   # INDEX API ERRORS
-  class IndexEntityKeyTypeException < SlicingDiceException; end
+  class IndexInvalidDecimalPlacesException < SlicingDiceException; end
 
   class IndexEntityValueTypeException < SlicingDiceException; end
 
@@ -122,7 +144,7 @@ module Exceptions
 
   class IndexFieldValueTooBigException < SlicingDiceException; end
 
-  class IndexDateFormatException < SlicingDiceException; end
+  class IndexTimeSeriesDateFormatException < SlicingDiceException; end
 
   class IndexFieldNotActiveException < SlicingDiceException; end
 
@@ -131,6 +153,8 @@ module Exceptions
   class IndexIdLimitException < SlicingDiceException; end
 
   class IndexFieldLimitException < SlicingDiceException; end
+
+  class IndexDateFormatException < SlicingDiceException; end
 
   class IndexFieldStringEmptyValueException < SlicingDiceException; end
 
@@ -145,6 +169,10 @@ module Exceptions
   class QueryTimeSeriesInvalidPrecisionMinutesException < SlicingDiceException; end
 
   class QueryTimeSeriesInvalidPrecisionHoursException < SlicingDiceException; end
+
+  class QueryDateFormatException < SlicingDiceException; end
+
+  class QueryRelativeIntervalException < SlicingDiceException; end
 
   # QUERY API ERRORS
   class QueryMissingQueryException < SlicingDiceException; end
@@ -165,7 +193,7 @@ module Exceptions
 
   class QueryEventCountQueryException < SlicingDiceException; end
 
-  class QueryDateFormatException < SlicingDiceException; end
+  class QueryInvalidMetricException < SlicingDiceException; end
 
   class QueryIntegerException < SlicingDiceException; end
 
@@ -188,8 +216,6 @@ module Exceptions
   class QueryExistsEntityLimitException < SlicingDiceException; end
 
   class QueryMultipleFiltersException < SlicingDiceException; end
-
-  class QueryContainsValueTypeException < SlicingDiceException; end
 
   class QueryMissingNameParamException < SlicingDiceException; end
 
@@ -230,5 +256,17 @@ module Exceptions
   class QueryAggregationInvalidParameterException < SlicingDiceException; end
 
   class QueryAggregationInvalidFilterQueryException < SlicingDiceException; end
+
+  class QueryInvalidMinfreqException < SlicingDiceException; end
+
+  class QueryExceededMaxNumberQuerysException < SlicingDiceException; end
+
+  class QueryInvalidOperatorUsageException < SlicingDiceException; end
+
+  class QueryInvalidParameterUsageException < SlicingDiceException; end
+
+  class QueryParameterInvalidFieldUsageException < SlicingDiceException; end
+
+  class QueryInvalidFieldUsageException < SlicingDiceException; end
 
 end
