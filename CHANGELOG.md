@@ -7,3 +7,5 @@
 ### Added
 - Thin layers around SlicingDice API endpoints
 - Automatic regression test script run_query_tests.rb with its JSON data
+- Add tests for data extraction
+

@@ -224,6 +224,10 @@ class SlicingDiceTester
       result = @client.top_values(query_data, test: true)
     elsif query_type == 'aggregation'
       result = @client.aggregation(query_data, test: true)
+    elsif query_type == 'result'
+      result = @client.result(query_data, test: true)
+    elsif query_type == 'score'
+      result = @client.score(query_data, test: true)
     end
 
     result
@@ -237,7 +241,9 @@ def main
     'count_entity',
     'count_event',
     'top_values',
-    'aggregation'
+    'aggregation',
+    'result',
+    'score'
   ]
 
   # Testing class with demo API key
