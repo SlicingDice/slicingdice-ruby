@@ -32,9 +32,12 @@ class SlicingDiceTester
     # Translation table for fields with timestamp
     @field_translation = {}
 
-    @sleep_time = 5  # seconds
-    @path = 'examples/'  # Directory containing examples to test
-    @extension = '.json'  # Examples file format
+    # Sleep time in seconds
+    @sleep_time = 10  
+    # Directory containing examples to test
+    @path = 'examples/'
+    # Examples file format
+    @extension = '.json'
 
     @num_successes = 0
     @num_fails = 0
@@ -45,8 +48,11 @@ class SlicingDiceTester
 
   attr_accessor :num_successes, :num_fails, :num_fails, :failed_tests
 
-  def run_tests(query_types)
-    test_data = load_test_data(query_types)
+  # Public: Run all tests for a determined query type
+  #
+  # query_type(String) - the type of the query to test
+  def run_tests(query_type)
+    test_data = load_test_data(query_type)
     num_tests = test_data.length
 
     test_data.each_with_index do |test, i|
@@ -57,12 +63,12 @@ class SlicingDiceTester
       if test.include? 'description'
         puts "  Description: #{test['description']}"
       end
-      puts "  Query type: #{query_types}"
+      puts "  Query type: #{query_type}"
 
       begin
         create_fields test
         index_data test
-        result = execute_query(query_types, test)
+        result = execute_query(query_type, test)
       rescue StandardError => e
         result = {"result" => {"error" => e.to_s}}
       end
@@ -79,8 +85,8 @@ class SlicingDiceTester
 
   # Public: Load all test data from JSON file for a given query type.
   #
-  #   query_type - String containing the name of the query that will be
-  #     tested. This name must match the JSON file name as well.
+  # query_type(String) - String containing the name of the query that will be
+  # tested. This name must match the JSON file name as well.
   #
   # Returns test data as a Hash.
   def load_test_data(query_type)
@@ -90,8 +96,8 @@ class SlicingDiceTester
 
   # Public: Create fields for a given test.
   #
-  #   test - Hash containing test name, fields metadata, data to be
-  #      indexed, query, and expected results.
+  # test(Hash) - Hash containing test name, fields metadata, data to be
+  # indexed, query, and expected results.
   def create_fields(test)
     is_singular = test['fields'].length == 1
     field_or_fields = nil
@@ -118,8 +124,8 @@ class SlicingDiceTester
   # This technique allows the same test suite to be executed over and over
   # again, since each execution will use different field names.
   #
-  #   field - Hash containing field data, such as "name" and
-  #     "api-name".
+  # field(Hash) - Hash containing field data, such as "name" and
+  # "api-name".
   def append_timestamp_to_field_name(field)
     old_name = "\"#{field['api-name']}\""
 
@@ -140,6 +146,10 @@ class SlicingDiceTester
     return now.round.to_s
   end
 
+  # Public: Index data for a given test on Slicing Dice API
+  #
+  # test(Hash) - Hash containing test name, fields metadata, data to be
+  # indexed, query, and expected results.
   def index_data(test)
     is_singular = test['fields'].length == 1
     entity_or_entities = nil
@@ -202,7 +212,7 @@ class SlicingDiceTester
     puts "  Status: Passed"
   end
 
-  # Public: Execute query at SlicingDice.
+  # Public: Execute query for a given test at Slicing Dice API.
   #
   # query_type - String containing the name of the query that will be
   #   tested. This name must match the JSON file name as well.
@@ -247,9 +257,9 @@ def main
   ]
 
   # Testing class with demo API key
-  # http://panel.slicingdice.com/docs/#api-details-api-connection-api-keys-demo-key
+  # To get a new Demo API key visit: http://panel.slicingdice.com/docs/#api-details-api-connection-api-keys-demo-key
   sd_tester = SlicingDiceTester.new(
-      api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vMW0iLCJwZXJtaXNzaW9uX2xldmVsIjozLCJwcm9qZWN0X2lkIjoyMCwiY2xpZW50X2lkIjoxMH0.xRBHeDxTzYAgFyuU94SWFbjITeoxgyRCQGdIee8qrLA',
+      api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vOThtIiwicGVybWlzc2lvbl9sZXZlbCI6MywicHJvamVjdF9pZCI6MjU5LCJjbGllbnRfaWQiOjEwfQ.pVXws7Dcz4qLAJ1n_Pu1l4nC3NuxQVocrmBY6wU2UJw',
       verbose=false)
 
   begin
