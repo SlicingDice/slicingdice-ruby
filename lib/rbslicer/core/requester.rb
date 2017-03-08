@@ -15,8 +15,9 @@ module Core
     # Public: Make a HTTP request.
     #
     # url(String) - A url String to make request
-    # data(Hash) - A Hash to send in request
     # headers(Hash) - A Hash with our own headers
+    # req_type(String) - The request type, should be get, post, put or delete
+    # data(Hash) - A Hash to send in request
     #
     # Returns a object with result request
     def run(url, headers, req_type, data: nil)
