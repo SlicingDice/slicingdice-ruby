@@ -57,9 +57,12 @@ module Rbslicer
       end
       @api_key = current_key_level[0]
     end
+
     # Public: Effectively makes the request
     #
     # url(String) - A url String to make request
+    # req_type(String) - The request type, should be get, post, put or delete
+    # key_level(Integer) - The minimum key level required to make the request
     # data(Hash) - A Hash to send in request
     #
     # Returns a request result

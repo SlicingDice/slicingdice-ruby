@@ -73,9 +73,11 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     end
     return base_url
   end
-  # Public: Create field in Slicing Dice
+  # Public: Create field in Slicing Dice API
   #
-  # data - A Hash in the Slicing Dice field format
+  # query - A Hash in the Slicing Dice field format
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   #
   # Examples
   #
@@ -101,14 +103,23 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     end
   end
 
+  # Public: Get all fields created on Slicing Dice API
+  #
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   def get_fields(test: false)
     base_url = wrapper_test(test)
     url = base_url + METHODS[:field]
     make_request url, "get", 2
   end
-  # Public: Make a index in Slicing Dice
+
+  # Public: Send a indexation to Slicing Dice API
   #
   # data - A Hash in the Slicing Dice field format
+  # auto_create_fields - if true Slicing Dice API will create nonexistent
+  # fields automatically
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   #
   # Examples
   #
@@ -138,7 +149,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
 
   # Public: Get a list of projects active and inactive
   #
-  # Returns a hash with api result
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   def get_projects(test: false)
     base_url = wrapper_test(test)
     url = base_url + METHODS[:projects]
@@ -158,7 +170,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     end
   end
 
-  # Public: Validate socre and result data extraction query and make request
+  # Public: Validate score and result data extraction query and make request
   #
   # url(String) - A url String to make request
   # query(Hash) - A Hash to send in request
@@ -171,6 +183,11 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     end
   end
 
+  # Public: Make a request to Slicing Dice API to save or update a saved query
+  #
+  # url(String) - A url String to make request
+  # query(Hash) - A Hash to send in request
+  # update(Boolean) - Indicate if the query is to update (true) or to create (false) 
   def saved_query_wrapper(url, query, update = false)
     if update
       make_request url, "put", 2, data: query
@@ -182,6 +199,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Make a count entity query in Slicing Dice API
   #
   # query(Hash) - A Hash to send in request
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   #
   # Returns a count entity query result
   def count_entity(query, test: false)
@@ -190,7 +209,10 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     count_query_wrapper(url, query)
   end
 
-  # Public: Make a count entity query total in Slicing Dice API
+  # Public: Make a total query in Slicing Dice API
+  #
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   #
   # Returns a count entity total query result
   def count_entity_total(test: false)
@@ -202,6 +224,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Make a count event query in Slicing Dice API
   #
   # query(Hash) - A Hash to send in request
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   #
   # Returns a count event query result
   def count_event(query, test: false)
@@ -213,6 +237,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Make a aggregation query in Slicing Dice API
   #
   # query(Hash) - A Hash to send in request
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   #
   # Returns a aggregation query result
   def aggregation(query, test: false)
@@ -220,7 +246,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     url = base_url + METHODS[:query_aggregation]
     if !query.key?("query")
       raise Exceptions::InvalidQueryException, 'The aggregation query must '\
-                                               'have up the key \'query\'.'
+                                               'have \'query\' property.'
     end
     fields = query["query"]
     if fields.length > 5
@@ -233,6 +259,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Make a top values query in Slicing Dice API
   #
   # query(Hash) - A Hash to send in request
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   #
   # Returns a top values query result
   def top_values(query, test: false)
@@ -244,9 +272,11 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     end
   end
 
-  # Public: Check if a list of entities exists in Slicin Dice API
+  # Public: Check if a list of entities exists in Slicing Dice API
   #
   # ids(Array) - A Array with ids to be checked
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   #
   # Returns a Hash with ids that exists and that don't exits
   def exists_entity(ids, test: false)
@@ -265,6 +295,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Get all saved queries
   #
   # query_name(String) - Name of saved query to recover in Slicing Dice API
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   #
   # Returns a hash with saved query
   def get_saved_queries(test: false)
@@ -276,6 +308,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Get a specific saved query
   #
   # query_name(String) - Name of saved query to recover in Slicing Dice API
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   #
   # Returns a hash with saved query
   def get_saved_query(query_name, test: false)
@@ -287,6 +321,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Delete a specific saved query
   #
   # query_name(String) - Name of saved query to recover in Slicing Dice API
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   #
   # Returns a hash with saved query
   def delete_saved_query(query_name, test: false)
@@ -298,6 +334,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Create a saved query in Slicing Dice API
   #
   # query(Hash) - A Hash to send in request
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   #
   # Returns a hash with saved query created and SUCCESS status
   def create_saved_query(query, test: false)
@@ -308,7 +346,10 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
 
   # Public: Update a saved query in Slicing Dice API
   #
+  # name(String) - Name of saved query to update in Slicing Dice API
   # query(Hash) - A Hash to send in request
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   #
   # Returns a hash with saved query updated and SUCCESS status
   def update_saved_query(name, query, test: false)
@@ -320,6 +361,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Get a data extraction result query
   #
   # query(Hash) - A Hash to send in request
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   def result(query, test: false)
     base_url = wrapper_test(test)
     url = base_url + METHODS[:query_data_extraction_result]
@@ -329,6 +372,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Get a data extraction score query
   #
   # query(Hash) - A Hash to send in request
+  # test - if true will use test end-point, otherwise will use production
+  # end-point
   def score(query, test: false)
     base_url = wrapper_test(test)
     url = base_url + METHODS[:query_data_extraction_score]

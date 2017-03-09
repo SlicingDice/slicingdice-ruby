@@ -60,7 +60,7 @@ module Utils
                                                         'can\'t be empty/None.'
         elsif name.length > 80
           raise Exceptions::InvalidFieldNameException, 'The field\'s name '\
-                                          'have a very big name.(Max: 80 chars)'
+                                          'have a very big content. (Max: 80 chars)'
         end
       else
         raise Exceptions::InvalidFieldException, 'The field should have a name.'
@@ -78,7 +78,7 @@ module Utils
                                             'description can\'t be empty/None.'
       elsif description.length > 300
         raise Exceptions::InvalidFieldDescriptionException, 'The field\'s '\
-                            'description have a very big name.(Max: 300 chars)'
+                            'description have a very big content. (Max: 300 chars)'
       end
       true
     end
@@ -125,16 +125,17 @@ module Utils
       end
     end
 
+    # Public: Check if enumerated field is valid
     def validate_enumerated_type
       unless @hash_data.key? 'range'
         raise Exceptions::InvalidFieldException, 'The \'enumerate\' type needs'\
-                                                  'of the \'range\' parameter.'
+                                                  ' \'range\' parameter.'
       end
     end
 
     # Public: Validates field data
     #
-    # Return true if field data has all requirements
+    # Returns true if field data has all requirements
     def validator
       validate_name
       validate_field_type
@@ -151,10 +152,13 @@ module Utils
       @queries = queries
     end
 
+    # Public: Validates count queries
+    #
+    # Returns true if count query is valid
     def validator
       if @queries.length > 10
         raise Exceptions::MaxLimitException, 'The query count entity has a '\
-                                              'limit of 10 queries by request.'
+                                              'limit of 10 queries per request.'
       end
       true
     end
@@ -165,6 +169,9 @@ module Utils
       @queries = queries
     end
 
+    # Public: Validates query data extraction queries (score or result)
+    #
+    # Returns true if data extraction query is valid
     def valid_keys?
       @queries.each do |key, value|
         if key == "limit"
@@ -205,10 +212,16 @@ module Utils
       @queries = queries
     end
 
+    # Public: Verify if top values query exceeds query limit
+    #
+    # Returns true if exceeds, false otherwise
     def exceeds_queries_limit
       true if @queries.length > 5
     end
 
+    # Public: Verify if top values query exceeds fields limit
+    #
+    # Returns false if not exceeds
     def exceeds_fields_limit
       @queries.each do |key, value|
         if value.length > 6
@@ -220,6 +233,9 @@ module Utils
       false
     end
 
+    # Public: Verify if top values query exceeds contains limit
+    #
+    # Returns false if not exceeds
     def exceeds_values_contains_limit
       @queries.each do |key, value|
         if value.key? 'contains'
@@ -233,6 +249,9 @@ module Utils
       false
     end
 
+    # Public: Validates top values queries
+    #
+    # Returns true if top values query is valid
     def validator
       true if !exceeds_queries_limit && 
               !exceeds_fields_limit && 
