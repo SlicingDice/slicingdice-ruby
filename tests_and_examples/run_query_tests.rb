@@ -165,7 +165,12 @@ class SlicingDiceTester
       puts index_data
     end
 
-    @client.index(index_data, test: true)
+    auto_create_fields = false
+    if index_data.include? 'auto-create-fields'
+      auto_create_fields = index_data['auto-create-fields']
+    end
+
+    @client.index(index_data, auto_create_fields, test: true)
 
     # Wait a few seconds so the data can be indexed by SlicingDice
     sleep @sleep_time
