@@ -27,13 +27,13 @@ require 'json'
 
 class SlicingDiceTester
   def initialize(api_key, verbose=False)
-    @client = SlicingDice.new(master_key=api_key)
+    @client = SlicingDice.new(master_key: api_key, uses_test_endpoint: true)
 
     # Translation table for fields with timestamp
     @field_translation = {}
 
     # Sleep time in seconds
-    @sleep_time = 10  
+    @sleep_time = 3  
     # Directory containing examples to test
     @path = 'examples/'
     # Examples file format
@@ -111,7 +111,7 @@ class SlicingDiceTester
 
     test['fields'].each do |field|
       append_timestamp_to_field_name(field)
-      @client.create_field(field, test: true)
+      @client.create_field(field)
 
       if @verbose
         puts "    - #{field['api-name']}"
@@ -170,7 +170,7 @@ class SlicingDiceTester
       auto_create_fields = index_data['auto-create-fields']
     end
 
-    @client.index(index_data, auto_create_fields, test: true)
+    @client.index(index_data, auto_create_fields)
 
     # Wait a few seconds so the data can be indexed by SlicingDice
     sleep @sleep_time
@@ -232,17 +232,17 @@ class SlicingDiceTester
     end
 
     if query_type == 'count_entity'
-      result = @client.count_entity(query_data, test: true)
+      result = @client.count_entity(query_data)
     elsif query_type == 'count_event'
-      result = @client.count_event(query_data, test: true)
+      result = @client.count_event(query_data)
     elsif query_type == 'top_values'
-      result = @client.top_values(query_data, test: true)
+      result = @client.top_values(query_data)
     elsif query_type == 'aggregation'
-      result = @client.aggregation(query_data, test: true)
+      result = @client.aggregation(query_data)
     elsif query_type == 'result'
-      result = @client.result(query_data, test: true)
+      result = @client.result(query_data)
     elsif query_type == 'score'
-      result = @client.score(query_data, test: true)
+      result = @client.score(query_data)
     end
 
     result

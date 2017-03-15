@@ -58,17 +58,19 @@ METHODS = {
   #    ....}
 class SlicingDice < Rbslicer::SlicingDiceAPI
   def initialize(
-      master_key = nil, custom_key = nil, read_key = nil,
-          write_key = nil, timeout = 60, use_ssl = true)
+      master_key: nil, custom_key: nil, read_key: nil,
+          write_key: nil, timeout: 60, use_ssl: true, uses_test_endpoint: false)
     super(master_key, custom_key, read_key, write_key, timeout, use_ssl)
     @list_query_types = [
       "count/entity", "count/event", "count/entity/total",
       "aggregation", "top_values"]
+
+    @uses_test_endpoint = uses_test_endpoint
   end
 
-  def wrapper_test(test)
+  def wrapper_test()
     base_url = BASE_URL
-    if test
+    if @uses_test_endpoint
       base_url += "/test"
     end
     return base_url
@@ -76,8 +78,6 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Create field in Slicing Dice API
   #
   # query - A Hash in the Slicing Dice field format
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
   #
   # Examples
   #
@@ -94,8 +94,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #    ....}
   #
   # Returns a hash with api result
-  def create_field(query, test: false)
-    base_url = wrapper_test(test)
+  def create_field(query)
+    base_url = wrapper_test()
     sd_validator = Utils::FieldValidator.new(query)
     if sd_validator.validator
       url = base_url + METHODS[:field]
@@ -104,11 +104,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   end
 
   # Public: Get all fields created on Slicing Dice API
-  #
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
-  def get_fields(test: false)
-    base_url = wrapper_test(test)
+  def get_fields()
+    base_url = wrapper_test()
     url = base_url + METHODS[:field]
     make_request url, "get", 2
   end
@@ -118,8 +115,6 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # data - A Hash in the Slicing Dice field format
   # auto_create_fields - if true Slicing Dice API will create nonexistent
   # fields automatically
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
   #
   # Examples
   #
@@ -132,9 +127,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #    => {"status" => "SUCCESS"}
   #
   # Returns a hash with api result
-  def index(query, auto_create_fields = false, test: false)
-    puts test
-    base_url = wrapper_test(test)
+  def index(query, auto_create_fields = false)
+    base_url = wrapper_test()
     if auto_create_fields
       query['auto-create-fields'] = true
     else
@@ -148,11 +142,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   end
 
   # Public: Get a list of projects active and inactive
-  #
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
-  def get_projects(test: false)
-    base_url = wrapper_test(test)
+  def get_projects()
+    base_url = wrapper_test()
     url = base_url + METHODS[:projects]
     make_request url, "get", 2
   end
@@ -199,24 +190,19 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Make a count entity query in Slicing Dice API
   #
   # query(Hash) - A Hash to send in request
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
   #
   # Returns a count entity query result
-  def count_entity(query, test: false)
-    base_url = wrapper_test(test)
+  def count_entity(query)
+    base_url = wrapper_test()
     url = base_url + METHODS[:query_count_entity]
     count_query_wrapper(url, query)
   end
 
   # Public: Make a total query in Slicing Dice API
   #
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
-  #
   # Returns a count entity total query result
-  def count_entity_total(test: false)
-    base_url = wrapper_test(test)
+  def count_entity_total()
+    base_url = wrapper_test()
     url = base_url + METHODS[:query_count_entity_total]
     make_request url, "get", 0
   end
@@ -224,12 +210,10 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Make a count event query in Slicing Dice API
   #
   # query(Hash) - A Hash to send in request
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
   #
   # Returns a count event query result
-  def count_event(query, test: false)
-    base_url = wrapper_test(test)
+  def count_event(query)
+    base_url = wrapper_test()
     url = base_url + METHODS[:query_count_event]
     count_query_wrapper(url, query)
   end
@@ -237,12 +221,10 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Make a aggregation query in Slicing Dice API
   #
   # query(Hash) - A Hash to send in request
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
   #
   # Returns a aggregation query result
-  def aggregation(query, test: false)
-    base_url = wrapper_test(test)
+  def aggregation(query)
+    base_url = wrapper_test()
     url = base_url + METHODS[:query_aggregation]
     if !query.key?("query")
       raise Exceptions::InvalidQueryException, 'The aggregation query must '\
@@ -259,12 +241,10 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Make a top values query in Slicing Dice API
   #
   # query(Hash) - A Hash to send in request
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
   #
   # Returns a top values query result
-  def top_values(query, test: false)
-    base_url = wrapper_test(test)
+  def top_values(query)
+    base_url = wrapper_test()
     url = base_url + METHODS[:query_top_values]
     sd_validator = Utils::QueryTopValuesValidator.new(query)
     if sd_validator.validator
@@ -275,12 +255,10 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Check if a list of entities exists in Slicing Dice API
   #
   # ids(Array) - A Array with ids to be checked
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
   #
   # Returns a Hash with ids that exists and that don't exits
-  def exists_entity(ids, test: false)
-    base_url = wrapper_test(test)
+  def exists_entity(ids)
+    base_url = wrapper_test()
     url = base_url + METHODS[:query_exists_entity]
     if ids.length > 100
       raise Exceptions::MaxLimitExceptions, 'The query exists entity must '\
@@ -295,12 +273,10 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Get all saved queries
   #
   # query_name(String) - Name of saved query to recover in Slicing Dice API
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
   #
   # Returns a hash with saved query
-  def get_saved_queries(test: false)
-    base_url = wrapper_test(test)
+  def get_saved_queries()
+    base_url = wrapper_test()
     url = base_url + METHODS[:query_saved]
     make_request url, "get", 2
   end
@@ -308,12 +284,10 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Get a specific saved query
   #
   # query_name(String) - Name of saved query to recover in Slicing Dice API
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
   #
   # Returns a hash with saved query
-  def get_saved_query(query_name, test: false)
-    base_url = wrapper_test(test)
+  def get_saved_query(query_name)
+    base_url = wrapper_test()
     url = base_url + METHODS[:query_saved] + query_name
     make_request url, "get", 0
   end
@@ -321,12 +295,10 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Delete a specific saved query
   #
   # query_name(String) - Name of saved query to recover in Slicing Dice API
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
   #
   # Returns a hash with saved query
-  def delete_saved_query(query_name, test: false)
-    base_url = wrapper_test(test)
+  def delete_saved_query(query_name)
+    base_url = wrapper_test()
     url = base_url + METHODS[:query_saved] + query_name
     make_request url, "delete", 2
   end
@@ -334,12 +306,10 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Create a saved query in Slicing Dice API
   #
   # query(Hash) - A Hash to send in request
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
   #
   # Returns a hash with saved query created and SUCCESS status
-  def create_saved_query(query, test: false)
-    base_url = wrapper_test(test)
+  def create_saved_query(query)
+    base_url = wrapper_test()
     url = base_url + METHODS[:query_saved]
     saved_query_wrapper url, query
   end
@@ -348,12 +318,10 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # name(String) - Name of saved query to update in Slicing Dice API
   # query(Hash) - A Hash to send in request
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
   #
   # Returns a hash with saved query updated and SUCCESS status
-  def update_saved_query(name, query, test: false)
-    base_url = wrapper_test(test)
+  def update_saved_query(name, query)
+    base_url = wrapper_test()
     url = base_url + METHODS[:query_saved] + name
     saved_query_wrapper url, query, update: true
   end
@@ -361,10 +329,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Get a data extraction result query
   #
   # query(Hash) - A Hash to send in request
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
-  def result(query, test: false)
-    base_url = wrapper_test(test)
+  def result(query)
+    base_url = wrapper_test()
     url = base_url + METHODS[:query_data_extraction_result]
     data_extraction_wrapper(url, query)
   end
@@ -372,10 +338,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Get a data extraction score query
   #
   # query(Hash) - A Hash to send in request
-  # test - if true will use test end-point, otherwise will use production
-  # end-point
-  def score(query, test: false)
-    base_url = wrapper_test(test)
+  def score(query)
+    base_url = wrapper_test()
     url = base_url + METHODS[:query_data_extraction_score]
     data_extraction_wrapper(url, query)
   end
