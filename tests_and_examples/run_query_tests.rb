@@ -33,7 +33,7 @@ class SlicingDiceTester
     @field_translation = {}
 
     # Sleep time in seconds
-    @sleep_time = 3  
+    @sleep_time = 10
     # Directory containing examples to test
     @path = 'examples/'
     # Examples file format
