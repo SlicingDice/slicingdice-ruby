@@ -24,7 +24,7 @@ module Core
       begin
         uri = URI.parse(url)
         http = Net::HTTP.new(uri.host, uri.port)
-        # http.use_ssl = @use_ssl
+        http.use_ssl = @use_ssl
         http.read_timeout = @timeout
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
         requester = nil
