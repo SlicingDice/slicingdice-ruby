@@ -29,16 +29,16 @@ gem install rbslicer
 require 'rbslicer'
 
 # Configure the client
-client = Rbslicer::Client.new(master_key = "API_KEY")
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: true)
 
 # Indexing data
 index_data = {
-    "user1@slicingdice.com" => {
+    "user50@slicingdice.com" => {
         "age" => 22
-    },
-    "auto-create-fields": true
+    }
 }
-client.index(index_data)
+auto_create_fields = true
+client.index(index_data, auto_create_fields)
 
 # Querying data
 query_data = {
@@ -66,13 +66,14 @@ puts client.count_entity(query_data)
 
 ### Constructor
 
-`initialize(master_key = nil, custom_key = nil, read_key = nil, write_key = nil, timeout = 60, use_ssl = true)`
+`initialize(master_key: nil, custom_key: nil, read_key: nil, write_key: nil, timeout: 60, use_ssl: true, uses_test_endpoint: false)`
 * `master_key (String)` - [API key](#api-details-api-connection-api-keys) to authenticate requests with the SlicingDice API.
 * `custom_key (String)` - [API key](#api-details-api-connection-api-keys) to authenticate requests with the SlicingDice API.
 * `read_key (String)` - [API key](#api-details-api-connection-api-keys) to authenticate requests with the SlicingDice API.
 * `write_key (String)` - [API key](#api-details-api-connection-api-keys) to authenticate requests with the SlicingDice API.
 * `use_ssl (Bool)` - Define if the requests verify SSL for HTTPS requests.
 * `timeout (Fixnum)` - Amount of time, in seconds, to wait for results for each request.
+* `uses_test_endpoint (Bool)` - If false the client will send requests to production end-point, otherwise to tests end-point.
 
 ### `get_projects()`
 Get all created projects, both active and inactive ones. This method corresponds to a [GET request at /project](http://panel.slicingdice.com/docs/#api-details-api-endpoints-get-project).
@@ -81,8 +82,9 @@ Get all created projects, both active and inactive ones. This method corresponds
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_API_KEY')
-puts sd.get_projects()
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+
+puts client.get_projects()
 ```
 
 #### Output example
@@ -115,8 +117,8 @@ Get all created fields, both active and inactive ones. This method corresponds t
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_API_KEY')
-puts sd.get_fields()
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+puts client.get_fields()
 ```
 
 #### Output example
@@ -147,14 +149,14 @@ puts sd.get_fields()
 }
 ```
 
-### `create_field(json_data, test = False)`
+### `create_field(json_data)`
 Create a new field. This method corresponds to a [POST request at /field](http://panel.slicingdice.com/docs/#api-details-api-endpoints-post-field).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_API_KEY')
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
 field = {
   "name" => "Year",
   "api-name" => "year",
@@ -162,7 +164,7 @@ field = {
   "description" => "Year of manufacturing",
   "storage" => "latest-value"
 }
-puts sd.create_field(field)
+puts client.create_field(field)
 ```
 
 #### Output example
@@ -174,14 +176,14 @@ puts sd.create_field(field)
 }
 ```
 
-### `index(json_data, test = False)`
+### `index(json_data)`
 Index data to existing entities or create new entities, if necessary. This method corresponds to a [POST request at /index](http://panel.slicingdice.com/docs/#api-details-api-endpoints-post-index).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_OR_WRITE_API_KEY')
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
 index_data = {
   "user1@slicingdice.com" => {
     "car-model" => "Ford Ka",
@@ -216,7 +218,7 @@ index_data = {
     }
   }
 }
-puts sd.index(index_data)
+puts client.index(index_data)
 ```
 
 #### Output example
@@ -230,20 +232,20 @@ puts sd.index(index_data)
 }
 ```
 
-### `exists_entity(ids, test = False)`
+### `exists_entity(ids)`
 Verify which entities exist in a project given a list of entity IDs. This method corresponds to a [POST request at /query/exists/entity](http://panel.slicingdice.com/docs/#api-details-api-endpoints-post-query-exists-entity).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_API_KEY')
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
 ids = [
   "user1@slicingdice.com",
   "user2@slicingdice.com",
   "user3@slicingdice.com"
 ]
-puts sd.exists_entity(ids)
+puts client.exists_entity(ids)
 ```
 
 #### Output example
@@ -269,8 +271,8 @@ Count the number of indexed entities. This method corresponds to a [GET request 
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_OR_READ_API_KEY')
-puts sd.count_entity_total()
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+puts client.count_entity_total()
 ```
 
 #### Output example
@@ -285,271 +287,209 @@ puts sd.count_entity_total()
 }
 ```
 
-### `count_entity(json_data, test = False)`
+### `count_entity(json_data)`
 Count the number of entities attending the given query. This method corresponds to a [POST request at /query/count/entity](http://panel.slicingdice.com/docs/#api-details-api-endpoints-post-query-count-entity).
 
 #### Request example
 
 ```ruby
 from pyslicer import SlicingDice
-sd = SlicingDice('MASTER_OR_READ_API_KEY')
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
 query = {
-    'users-from-ny-or-ca': [
+    'corolla-or-fit': [
         {
-            'state': {
-                'equals': 'NY'
+            'car-model': {
+                'equals': 'toyota corolla'
             }
         },
         'or',
         {
-            'state-origin': {
-                'equals': 'CA'
+            'car-model': {
+                'equals': 'honda fit'
             }
         },
     ],
-    'users-from-ny': [
+    'ford-ka': [
         {
-            'state': {
-                'equals': 'NY'
+            'car-model': {
+                'equals': 'ford ka'
             }
         }
     ],
-    'bypass-cache': False
+    'bypass-cache': false
 }
-print sd.count_entity(query)
+print client.count_entity(query)
 ```
 
 #### Output example
 
 ```json
 {
-    "status": "success",
-    "result": {
-        "users-from-ny-or-ca": 175,
-        "users-from-ny": 296
-    },
-    "took": 0.103
+   "result":{
+      "ford-ka":2,
+      "corolla-or-fit":2
+   },
+   "took":0.083,
+   "status":"success"
 }
 ```
 
-### `count_event(json_data, test = False)`
+### `count_event(json_data)`
 Count the number of occurrences for time-series events attending the given query. This method corresponds to a [POST request at /query/count/event](http://panel.slicingdice.com/docs/#api-details-api-endpoints-post-query-count-event).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_OR_READ_API_KEY')
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
 query = {
-  "users-from-ny-in-jan" => [
+  "test-drives-in-ny" => [
     {
-      "test-field" => {
+      "test-drives" => {
         "equals" => "NY",
         "between" => [
-          "2016-01-01T00:00:00Z",
-          "2016-01-31T00:00:00Z"
-        ],
-        "minfreq" => 2
+          "2016-08-16T00:00:00Z",
+          "2016-08-18T00:00:00Z"
+        ]
       }
     }
   ],
-  "users-from-ny-in-feb" => [
+  "test-drives-in-ca" => [
     {
-      "test-field" => {
-        "equals" => "NY",
+      "test-drives" => {
+        "equals" => "CA",
         "between" => [
-          "2016-02-01T00:00:00Z",
-          "2016-02-28T00:00:00Z"
-        ],
-        "minfreq" => 2
+          "2016-04-04T00:00:00Z",
+          "2016-04-06T00:00:00Z"
+        ]
       }
     }
   ],
   "bypass-cache" => true
 }
-puts sd.count_event(query)
+puts client.count_event(query)
 ```
 
 #### Output example
 
 ```json
 {
-    "status": "success",
-    "result": {
-        "users-from-ny-in-jan": 175,
-        "users-from-ny-in-feb": 296
-    },
-    "took": 0.103
+   "result":{
+      "test-drives-in-ny":3,
+      "test-drives-in-ca":0
+   },
+   "took":0.063,
+   "status":"success"
 }
 ```
 
-### `top_values(json_data, test = False)`
+### `top_values(json_data)`
 Return the top values for entities attending the given query. This method corresponds to a [POST request at /query/top_values](http://panel.slicingdice.com/docs/#api-details-api-endpoints-post-query-top-values).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_OR_READ_API_KEY')
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
 query = {
-  "user-gender" => {
-    "gender" => 2
+  "car-year" => {
+    "year" => 2
   },
-  "operating-systems" => {
-    "os" => 3
-  },
-  "linux-operating-systems" => {
-    "os" => 3,
-    "contains" => [
-      "linux",
-      "unix"
-    ]
+  "car models" => {
+    "car-model" => 3
   }
 }
-puts sd.top_values(query)
+puts client.top_values(query)
 ```
 
 #### Output example
 
 ```json
 {
-    "status": "success",
-    "result": {
-        "user-gender": {
-            "gender": [
-                {
-                    "quantity": 6.0,
-                    "value": "male"
-                }, {
-                    "quantity": 4.0,
-                    "value": "female"
-                }
-            ]
-        },
-        "operating-systems": {
-            "os": [
-                {
-                    "quantity": 55.0,
-                    "value": "windows"
-                }, {
-                    "quantity": 25.0,
-                    "value": "macos"
-                }, {
-                    "quantity": 12.0,
-                    "value": "linux"
-                }
-            ]
-        },
-        "linux-operating-systems": {
-            "os": [
-                {
-                    "quantity": 12.0,
-                    "value": "linux"
-                }, {
-                    "quantity": 3.0,
-                    "value": "debian-linux"
-                }, {
-                    "quantity": 2.0,
-                    "value": "unix"
-                }
-            ]
-        }
-    },
-    "took": 0.103
+   "result":{
+      "car models":{
+         "car-model":[
+            {
+               "quantity":2,
+               "value":"ford ka"
+            },
+            {
+               "quantity":1,
+               "value":"honda fit"
+            },
+            {
+               "quantity":1,
+               "value":"toyota corolla"
+            }
+         ]
+      },
+      "car-year":{
+         "year":[
+            {
+               "quantity":2,
+               "value":"2016"
+            },
+            {
+               "quantity":1,
+               "value":"2010"
+            }
+         ]
+      }
+   },
+   "took":0.034,
+   "status":"success"
 }
 ```
 
-### `aggregation(json_data, test = False)`
+### `aggregation(json_data)`
 Return the aggregation of all fields in the given query. This method corresponds to a [POST request at /query/aggregation](http://panel.slicingdice.com/docs/#api-details-api-endpoints-post-query-aggregation).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_OR_READ_API_KEY')
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
 query = {
   "query" => [
     {
-      "gender" => 2
+      "year" => 2
     },
     {
-      "os" => 2,
+      "car-model" => 2,
       "equals" => [
-        "linux",
-        "macos",
-        "windows"
+        "honda fit",
+        "toyota corolla"
       ]
-    },
-    {
-      "browser" => 2
     }
   ]
 }
-puts sd.aggregation(query)
+puts client.aggregation(query)
 ```
 
 #### Output example
 
 ```json
 {
-    "status": "success",
-    "result": {
-        "gender": [
-            {
-                "quantity": 6,
-                "value": "male",
-                "os": [
-                    {
-                        "quantity": 5,
-                        "value": "windows",
-                        "browser": [
-                            {
-                                "quantity": 3,
-                                "value": "safari"
-                            }, {
-                                "quantity": 2,
-                                "value": "internet explorer"
-                            }
-                        ]
-                    }, {
-                        "quantity": 1,
-                        "value": "linux",
-                        "browser": [
-                            {
-                                "quantity": 1,
-                                "value": "chrome"
-                            }
-                        ]
-                    }
-                ]
-            }, {
-                "quantity": 4,
-                "value": "female",
-                "os": [
-                    {
-                        "quantity": 3,
-                        "value": "macos",
-                        "browser": [
-                            {
-                                "quantity": 3,
-                                "value": "chrome"
-                            }
-                        ]
-                    }, {
-                        "quantity": 1,
-                        "value": "linux",
-                        "browser": [
-                            {
-                                "quantity": 1,
-                                "value": "chrome"
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    },
-    "took": 0.103
+   "result":{
+      "year":[
+         {
+            "quantity":2,
+            "value":"2016",
+            "car-model":[
+               {
+                  "quantity":1,
+                  "value":"honda fit"
+               }
+            ]
+         },
+         {
+            "quantity":1,
+            "value":"2005"
+         }
+      ]
+   },
+   "took":0.079,
+   "status":"success"
 }
 ```
 
@@ -560,8 +500,8 @@ Get all saved queries. This method corresponds to a [GET request at /query/saved
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_API_KEY')
-puts sd.get_saved_queries()
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+puts client.get_saved_queries()
 ```
 
 #### Output example
@@ -604,278 +544,284 @@ puts sd.get_saved_queries()
 }
 ```
 
-### `create_saved_query(json_data, test = False)`
+### `create_saved_query(json_data)`
 Create a saved query at SlicingDice. This method corresponds to a [POST request at /query/saved](http://panel.slicingdice.com/docs/#api-details-api-endpoints-post-query-saved).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_API_KEY')
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
 query = {
   "name" => "my-saved-query",
   "type" => "count/entity",
   "query" => [
     {
-      "state" => {
-        "equals" => "NY"
+      "car-model" => {
+        "equals" => "honda fit"
       }
     },
     "or",
     {
-      "state-origin" => {
-        "equals" => "CA"
+      "car-model" => {
+        "equals" => "toyota corolla"
       }
     }
   ],
   "cache-period" => 100
 }
-puts sd.create_saved_query(query)
+puts client.create_saved_query(query)
 ```
 
 #### Output example
 
 ```json
 {
-    "status": "success",
-    "name": "my-saved-query",
-    "type": "count/entity",
-    "query": [
-        {
-            "state": {
-                "equals": "NY"
-            }
-        },
-        "or",
-        {
-            "state-origin": {
-                "equals": "CA"
-            }
-        }
-    ],
-    "cache-period": 100,
-    "took": 0.103
+   "took":0.053,
+   "query":[
+      {
+         "car-model":{
+            "equals":"honda fit"
+         }
+      },
+      "or",
+      {
+         "car-model":{
+            "equals":"toyota corolla"
+         }
+      }
+   ],
+   "name":"my-saved-query",
+   "type":"count/entity",
+   "cache-period":100,
+   "status":"success"
 }
 ```
 
-### `update_saved_query(query_name, json_data, test = False)`
+### `update_saved_query(query_name, json_data)`
 Update an existing saved query at SlicingDice. This method corresponds to a [PUT request at /query/saved/QUERY_NAME](http://panel.slicingdice.com/docs/#api-details-api-endpoints-put-query-saved-query-name).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_API_KEY')
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
 new_query = {
   "type" => "count/entity",
   "query" => [
     {
-      "state" => {
-        "equals" => "NY"
+      "car-model" => {
+        "equals" => "ford ka"
       }
     },
     "or",
     {
-      "state-origin" => {
-        "equals" => "CA"
+      "car-model" => {
+        "equals" => "toyota corolla"
       }
     }
   ],
   "cache-period" => 100
 }
-puts sd.update_saved_query("my-saved-query", new_query)
+puts client.update_saved_query("my-saved-query", new_query)
 ```
 
 #### Output example
 
 ```json
 {
-    "status": "success",
-    "name": "my-saved-query",
-    "type": "count/entity",
-    "query": [
-        {
-            "state": {
-                "equals": "NY"
-            }
-        },
-        "or",
-        {
-            "state-origin": {
-                "equals": "CA"
-            }
-        }
-    ],
-    "cache-period": 100,
-    "took": 0.103
+   "took":0.037,
+   "query":[
+      {
+         "car-model":{
+            "equals":"ford ka"
+         }
+      },
+      "or",
+      {
+         "car-model":{
+            "equals":"toyota corolla"
+         }
+      }
+   ],
+   "type":"count/entity",
+   "cache-period":100,
+   "status":"success"
 }
 ```
 
-### `get_saved_query(query_name, test = False)`
+### `get_saved_query(query_name)`
 Executed a saved query at SlicingDice. This method corresponds to a [GET request at /query/saved/QUERY_NAME](http://panel.slicingdice.com/docs/#api-details-api-endpoints-get-query-saved-query-name).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_OR_READ_API_KEY')
-puts sd.get_saved_query("my-saved-query")
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+puts client.get_saved_query("my-saved-query")
 ```
 
 #### Output example
 
 ```json
 {
-    "status": "success",
-    "type": "count/entity",
-    "query": [
-        {
-            "state": {
-                "equals": "NY"
-            }
-        },
-        "or",
-        {
-            "state-origin": {
-                "equals": "CA"
-            }
-        }
-    ],
-    "result": {
-        "my-saved-query": 175
-    },
-    "took": 0.103
+   "result":{
+      "query":2
+   },
+   "took":0.035,
+   "query":[
+      {
+         "car-model":{
+            "equals":"honda fit"
+         }
+      },
+      "or",
+      {
+         "car-model":{
+            "equals":"toyota corolla"
+         }
+      }
+   ],
+   "type":"count/entity",
+   "status":"success"
 }
 ```
 
-### `delete_saved_query(query_name, test = False)`
+### `delete_saved_query(query_name)`
 Delete a saved query at SlicingDice. This method corresponds to a [DELETE request at /query/saved/QUERY_NAME](http://panel.slicingdice.com/docs/#api-details-api-endpoints-delete-query-saved-query-name).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_API_KEY')
-puts sd.delete_saved_query("my-saved-query")
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+puts client.delete_saved_query("my-saved-query")
 ```
 
 #### Output example
 
 ```json
+
 {
-    "status": "success",
-    "deleted-query": "my-saved-query",
-    "type": "count/entity",
-    "query": [
-        {
-            "state": {
-                "equals": "NY"
-            }
-        },
-        "or",
-        {
-            "state-origin": {
-                "equals": "CA"
-            }
-        }
-    ],
-    "took": 0.103
+   "took":0.029,
+   "query":[
+      {
+         "car-model":{
+            "equals":"honda fit"
+         }
+      },
+      "or",
+      {
+         "car-model":{
+            "equals":"toyota corolla"
+         }
+      }
+   ],
+   "type":"count/entity",
+   "cache-period":100,
+   "status":"success",
+   "deleted-query":"my-saved-query"
 }
 ```
 
-### `result(json_data, test = False)`
+### `result(json_data)`
 Retrieve indexed values for entities attending the given query. This method corresponds to a [POST request at /data_extraction/result](http://panel.slicingdice.com/docs/#api-details-api-endpoints-post-data-extraction-result).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_OR_READ_API_KEY')
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
 query = {
   "query" => [
     {
-      "users-from-ny" => {
-        "equals" => "NY"
+      "car-model" => {
+        "equals" => "ford ka"
       }
     },
     "or",
     {
-      "users-from-ca" => {
-        "equals" => "CA"
+      "car-model" => {
+        "equals" => "toyota corolla"
       }
     }
   ],
-  "fields" => ["name", "year"],
+  "fields" => ["car-model", "year"],
   "limit" => 2
 }
-puts sd.result(query)
+puts client.result(query)
 ```
 
 #### Output example
 
 ```json
 {
-    "status": "success",
-    "data": {
-        "user1@slicingdice.com": {
-            "name": "John",
-            "year": 2016
-        },
-        "user2@slicingdice.com": {
-            "name": "Mary",
-            "year": 2005
-        }
-    },
-    "took": 0.103
+   "took":0.113,
+   "next-page":null,
+   "data":{
+      "customer5@mycustomer.com":{
+         "year":"2005",
+         "car-model":"ford ka"
+      },
+      "user1@slicingdice.com":{
+         "year":"2016",
+         "car-model":"ford ka"
+      }
+   },
+   "page":1,
+   "status":"success"
 }
 ```
 
-### `score(json_data, test = False)`
+### `score(json_data)`
 Retrieve indexed values as well as their relevance for entities attending the given query. This method corresponds to a [POST request at /data_extraction/score](http://panel.slicingdice.com/docs/#api-details-api-endpoints-post-data-extraction-score).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
-sd = SlicingDice.new('MASTER_OR_READ_API_KEY')
+client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
 query = {
   "query" => [
     {
-      "users-from-ny" => {
-        "equals" => "NY"
+      "car-model" => {
+        "equals" => "ford ka"
       }
     },
     "or",
     {
-      "users-from-ca" => {
-        "equals" => "CA"
+      "car-model" => {
+        "equals" => "toyota corolla"
       }
     }
   ],
-  "fields" => ["name", "year"],
+  "fields" => ["car-model", "year"],
   "limit" => 2
 }
-puts sd.score(query)
+
+puts client.score(query)
 ```
 
 #### Output example
 
 ```json
 {
-    "status": "success",
-    "data": {
-        "user1@slicingdice.com": {
-            "name": "John",
-            "year": 2016,
-            "score": 2
-        },
-        "user2@slicingdice.com": {
-            "name": "Mary",
-            "year": 2005,
-            "score": 1
-        }
-    },
-    "took": 0.103
+   "took":0.063,
+   "next-page":null,
+   "data":{
+      "user3@slicingdice.com":{
+         "score":1,
+         "year":"2010",
+         "car-model":"toyota corolla"
+      },
+      "user2@slicingdice.com":{
+         "score":1,
+         "year":"2016",
+         "car-model":"honda fit"
+      }
+   },
+   "page":1,
+   "status":"success"
 }
 ```
 
