@@ -45,7 +45,7 @@ query_data = {
     "users-between-20-and-40" => [
         {
             "age" => {
-                "range": [
+                "range" => [
                     20,
                     40
                 ]
@@ -293,30 +293,30 @@ Count the number of entities attending the given query. This method corresponds 
 #### Request example
 
 ```ruby
-from pyslicer import SlicingDice
+require 'rbslicer'
 client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
 query = {
-    'corolla-or-fit': [
+    'corolla-or-fit' => [
         {
-            'car-model': {
-                'equals': 'toyota corolla'
+            'car-model' => {
+                'equals' => 'toyota corolla'
             }
         },
         'or',
         {
-            'car-model': {
-                'equals': 'honda fit'
+            'car-model' => {
+                'equals' => 'honda fit'
             }
         },
     ],
-    'ford-ka': [
+    'ford-ka' => [
         {
-            'car-model': {
-                'equals': 'ford ka'
+            'car-model' => {
+                'equals' => 'ford ka'
             }
         }
     ],
-    'bypass-cache': false
+    'bypass-cache' => false
 }
 print client.count_entity(query)
 ```

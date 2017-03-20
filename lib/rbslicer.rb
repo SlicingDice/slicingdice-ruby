@@ -96,6 +96,15 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Returns a hash with api result
   def create_field(query)
     base_url = wrapper_test()
+    if query.kind_of?(Array)
+      query.each { |q| field_create(q) }
+    else
+      field_create(query)
+    end
+  end
+
+  def field_create(query)
+    base_url = wrapper_test()
     sd_validator = Utils::FieldValidator.new(query)
     if sd_validator.validator
       url = base_url + METHODS[:field]
