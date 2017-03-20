@@ -110,7 +110,7 @@ puts client.get_projects()
 }
 ```
 
-### `get_fields(test = False)`
+### `get_fields()`
 Get all created fields, both active and inactive ones. This method corresponds to a [GET request at /field](http://panel.slicingdice.com/docs/#api-details-api-endpoints-get-field).
 
 #### Request example
@@ -264,7 +264,7 @@ puts client.exists_entity(ids)
 }
 ```
 
-### `count_entity_total(test = False)`
+### `count_entity_total()`
 Count the number of indexed entities. This method corresponds to a [GET request at /query/count/entity/total](http://panel.slicingdice.com/docs/#api-details-api-endpoints-get-query-count-entity-total).
 
 #### Request example
@@ -493,7 +493,7 @@ puts client.aggregation(query)
 }
 ```
 
-### `get_saved_queries(test = False)`
+### `get_saved_queries()`
 Get all saved queries. This method corresponds to a [GET request at /query/saved](http://panel.slicingdice.com/docs/#api-details-api-endpoints-get-query-saved).
 
 #### Request example
