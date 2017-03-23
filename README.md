@@ -1,5 +1,5 @@
 # SlicingDice Official Ruby Client (v1.0)
-Build Status: [![CircleCI](https://circleci.com/gh/SlicingDice/slicingdice-ruby.svg?style=svg)](https://circleci.com/gh/SlicingDice/slicingdice-ruby)
+### Build Status: [![CircleCI](https://circleci.com/gh/SlicingDice/slicingdice-ruby.svg?style=svg)](https://circleci.com/gh/SlicingDice/slicingdice-ruby)
 
 Official Ruby client for [SlicingDice](http://www.slicingdice.com/), Data Warehouse and Analytics Database as a Service.  
 
