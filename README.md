@@ -20,7 +20,8 @@ Whether you want to test the client installation or simply check more examples o
 In order to install the Ruby client, you only need to use [`gem`](https://rubygems.org/).
 
 ```bash
-gem install rbslicer
+$ curl -s https://packagecloud.io/install/repositories/slicingdice/clients/script.gem.sh | bash
+$ gem install rbslicer
 ```
 
 ## Usage
