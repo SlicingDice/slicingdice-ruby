@@ -269,4 +269,6 @@ module Exceptions
 
   class QueryInvalidFieldUsageException < SlicingDiceException; end
 
+  class FieldInvalidRangeException < SlicingDiceException; end
+
 end
