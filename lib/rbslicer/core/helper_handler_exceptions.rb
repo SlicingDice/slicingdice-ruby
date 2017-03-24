@@ -29,7 +29,7 @@ module HelperHandlerExceptions
     31 => Exceptions::AccountPaymentRequiredException,
     32 => Exceptions::AccountBannedException,
     33 => Exceptions::AccountDisabledException,
-    39 => Exceptions::FieldInvalidRangeException,
+    39 => Exceptions::IndexInvalidRangeException,
     # Field errors (40 - 59)
     40 => Exceptions::FieldMissingParamException,
     41 => Exceptions::FieldTypeException,
