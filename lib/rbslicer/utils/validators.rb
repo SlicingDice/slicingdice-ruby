@@ -178,9 +178,6 @@ module Utils
           if !value.is_a?(Integer)
             raise Exceptions::InvalidQueryException, 'The key \'limit\' in '\
                                                     'query has a invalid value.'
-          elsif value > 100
-            raise Exceptions::InvalidQueryException, 'The field \'limit\' has '
-                                                      'a value max of 100.'
           end
         elsif key == "fields"
           if !value.is_a?(Array)
