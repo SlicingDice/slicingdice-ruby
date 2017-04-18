@@ -58,8 +58,8 @@ METHODS = {
   #    ....}
 class SlicingDice < Rbslicer::SlicingDiceAPI
   def initialize(
-      master_key: nil, custom_key: nil, read_key: nil,
-          write_key: nil, timeout: 60, use_ssl: true, uses_test_endpoint: false)
+      master_key= nil, custom_key = nil, read_key = nil, write_key = nil,
+      timeout = 60, use_ssl = true, uses_test_endpoint = false)
     super(master_key, custom_key, read_key, write_key, timeout, use_ssl)
     @list_query_types = [
       "count/entity", "count/event", "count/entity/total",
@@ -187,7 +187,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # url(String) - A url String to make request
   # query(Hash) - A Hash to send in request
-  # update(Boolean) - Indicate if the query is to update (true) or to create (false) 
+  # update(Boolean) - Indicate if the query is to update (true) or to create (false)
   def saved_query_wrapper(url, query, update = false)
     if update
       make_request url, "put", 2, data: query

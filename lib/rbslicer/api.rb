@@ -66,7 +66,7 @@ module Rbslicer
     # data(Hash) - A Hash to send in request
     #
     # Returns a request result
-    def make_request(url, req_type, key_level,  data: nil)
+    def make_request(url, req_type, key_level,  data = nil)
       check_key key_level
       headers = {
         'Content-Type' => 'application/json',

@@ -20,7 +20,7 @@ module Core
     # data(Hash) - A Hash to send in request
     #
     # Returns a object with result request
-    def run(url, headers, req_type, data: nil)
+    def run(url, headers, req_type, data = nil)
       begin
         uri = URI.parse(url)
         http = Net::HTTP.new(uri.host, uri.port)
