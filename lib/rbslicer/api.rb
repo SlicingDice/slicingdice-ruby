@@ -72,7 +72,7 @@ module Rbslicer
         'Content-Type' => 'application/json',
         'Authorization' => @api_key
       }
-      @req = @requester.run url, headers, req_type, data: data
+      @req = @requester.run(url, headers, req_type, data=data)
       handler_request!
     end
 
