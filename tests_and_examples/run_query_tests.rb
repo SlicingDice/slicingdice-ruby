@@ -27,7 +27,7 @@ require 'json'
 
 class SlicingDiceTester
   def initialize(api_key, verbose=False)
-    @client = SlicingDice.new(master_key=api_key, uses_test_endpoint=true)
+    @client = SlicingDice.new(master_key: api_key, uses_test_endpoint: true)
 
     # Translation table for fields with timestamp
     @field_translation = {}
