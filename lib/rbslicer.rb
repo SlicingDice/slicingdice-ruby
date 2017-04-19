@@ -57,9 +57,15 @@ METHODS = {
   #    ...  "field_name" => "ruby-string-field"
   #    ....}
 class SlicingDice < Rbslicer::SlicingDiceAPI
-  def initialize(
-      master_key= nil, custom_key = nil, read_key = nil, write_key = nil,
-      timeout = 60, use_ssl = true, uses_test_endpoint = false, base_url= nil)
+  def initialize(options = {})
+      master_key= options.fetch(:master_key, nil)
+      custom_key = options.fetch(:custom_key, nil)
+      read_key = options.fetch(:read_key, nil)
+      write_key = options.fetch(:write_key, nil)
+      timeout = options.fetch(:timeout, 60)
+      use_ssl = options.fetch(:use_ssl, true)
+      uses_test_endpoint = options.fetch(:uses_test_endpoint, false)
+      base_url= options.fetch(:base_url, 60)
     super(master_key, custom_key, read_key, write_key, timeout, use_ssl)
     @list_query_types = [
       "count/entity", "count/event", "count/entity/total",
