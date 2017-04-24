@@ -14,12 +14,10 @@ module Rbslicer
     #
     # token(String) - Token to access API
     # timeout(Integer) - Define timeout to request, defaults 60 secs(Optional).
-    # use_ssl(TrueClass or FalseClass) - Define if the request uses
-    #   verification SSL for HTTPS requests. Defaults False.(Optional)
     def initialize(
         master_key = nil, custom_key = nil, read_key = nil,
-          write_key = nil, timeout = 60, use_ssl = true)
-      @requester = Core::Requester.new(use_ssl, timeout)
+          write_key = nil, timeout = 60)
+      @requester = Core::Requester.new(timeout)
       @key = organize_keys(master_key, custom_key, write_key, read_key)
       @api_key = nil
       @status_code = nil

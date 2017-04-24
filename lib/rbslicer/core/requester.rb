@@ -7,8 +7,7 @@ require 'json'
 module Core
   # Public: Make full post request
   class Requester
-    def initialize(use_ssl, timeout)
-      @use_ssl = use_ssl
+    def initialize(timeout)
       @timeout = timeout
     end
 
