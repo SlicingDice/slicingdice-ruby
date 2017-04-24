@@ -24,7 +24,7 @@ module Core
       begin
         uri = URI.parse(url)
         http = Net::HTTP.new(uri.host, uri.port)
-        if uri.port.to_s != "80"
+        if uri.port.to_s == "443"
           http.use_ssl = true
         end
         http.read_timeout = @timeout
