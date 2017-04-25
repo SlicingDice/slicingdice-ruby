@@ -7,8 +7,7 @@ require 'json'
 module Core
   # Public: Make full post request
   class Requester
-    def initialize(use_ssl, timeout)
-      @use_ssl = use_ssl
+    def initialize(timeout)
       @timeout = timeout
     end
 
@@ -20,11 +19,13 @@ module Core
     # data(Hash) - A Hash to send in request
     #
     # Returns a object with result request
-    def run(url, headers, req_type, data: nil)
+    def run(url, headers, req_type, data = nil)
       begin
         uri = URI.parse(url)
         http = Net::HTTP.new(uri.host, uri.port)
-        http.use_ssl = @use_ssl
+        if uri.port.to_s == "443"
+          http.use_ssl = true
+        end
         http.read_timeout = @timeout
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
         requester = nil

@@ -57,19 +57,28 @@ METHODS = {
   #    ...  "field_name" => "ruby-string-field"
   #    ....}
 class SlicingDice < Rbslicer::SlicingDiceAPI
-  def initialize(
-      master_key: nil, custom_key: nil, read_key: nil,
-          write_key: nil, timeout: 60, use_ssl: true, uses_test_endpoint: false)
-    super(master_key, custom_key, read_key, write_key, timeout, use_ssl)
+  def initialize(options = {})
+      master_key= options.fetch(:master_key, nil)
+      custom_key = options.fetch(:custom_key, nil)
+      read_key = options.fetch(:read_key, nil)
+      write_key = options.fetch(:write_key, nil)
+      timeout = options.fetch(:timeout, 60)
+      uses_test_endpoint = options.fetch(:uses_test_endpoint, false)
+      base_url= options.fetch(:base_url, BASE_URL)
+    super(master_key, custom_key, read_key, write_key, timeout)
     @list_query_types = [
       "count/entity", "count/event", "count/entity/total",
       "aggregation", "top_values"]
-
+    if base_url.nil?
+      @base_url = BASE_URL
+    else
+      @base_url = base_url
+    end
     @uses_test_endpoint = uses_test_endpoint
   end
 
   def wrapper_test()
-    base_url = BASE_URL
+    base_url = @base_url
     if @uses_test_endpoint
       base_url += "/test"
     end
@@ -108,7 +117,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     sd_validator = Utils::FieldValidator.new(query)
     if sd_validator.validator
       url = base_url + METHODS[:field]
-      make_request url, "post", 2, data: query
+      make_request(url, "post", 2, data= query)
     end
   end
 
@@ -146,7 +155,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     sd_validator = Utils::IndexValidator.new(query)
     if sd_validator.validator
       url = base_url + METHODS[:index]
-      make_request url, "post", 1, data: query
+      make_request(url, "post", 1, data = query)
     end
   end
 
@@ -166,7 +175,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   def count_query_wrapper(url, query)
     sd_validator = Utils::QueryCountValidator.new(query)
     if sd_validator.validator
-      make_request url, "post", 0, data: query
+      make_request(url, "post", 0, data= query)
     end
   end
 
@@ -179,7 +188,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   def data_extraction_wrapper(url, query)
     sd_validator = Utils::QueryDataExtractionValidator.new(query)
     if sd_validator.validator
-      make_request url, "post", 0, data: query
+      make_request(url, "post", 0, data= query)
     end
   end
 
@@ -187,12 +196,12 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # url(String) - A url String to make request
   # query(Hash) - A Hash to send in request
-  # update(Boolean) - Indicate if the query is to update (true) or to create (false) 
+  # update(Boolean) - Indicate if the query is to update (true) or to create (false)
   def saved_query_wrapper(url, query, update = false)
     if update
-      make_request url, "put", 2, data: query
+      make_request(url, "put", 2, data= query)
     else
-      make_request url, "post", 2, data: query
+      make_request(url, "post", 2, data=query)
     end
   end
 
@@ -244,7 +253,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
       raise Exceptions::MaxLimitExceptions, 'The aggregation query must have'\
                                             ' up to 5 fields per request.'
     end
-    make_request url, "post", 0, data: query
+    make_request(url, "post", 0, data=query)
   end
 
   # Public: Make a top values query in Slicing Dice API
@@ -257,7 +266,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     url = base_url + METHODS[:query_top_values]
     sd_validator = Utils::QueryTopValuesValidator.new(query)
     if sd_validator.validator
-      make_request url, "post", 0, data: query
+      make_request(url, "post", 0, data=query)
     end
   end
 
@@ -276,7 +285,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     query = {
       'ids' => ids
     }
-    make_request url, "post", 0, data: query
+    make_request(url, "post", 0, data=query)
   end
 
   # Public: Get all saved queries
@@ -332,7 +341,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   def update_saved_query(name, query)
     base_url = wrapper_test()
     url = base_url + METHODS[:query_saved] + name
-    saved_query_wrapper url, query, update: true
+    saved_query_wrapper(url, query, update=true)
   end
 
   # Public: Get a data extraction result query

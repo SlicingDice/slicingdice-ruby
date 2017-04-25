@@ -43,7 +43,7 @@ module Utils
     # hash_data - A Hash data to analyze
     def initialize(hash_data)
       @hash_data = hash_data
-      @valid_type_fields = 
+      @valid_type_fields =
         ["unique-id", "boolean", "string", "integer", "decimal",
           "enumerated", "date", "integer-time-series",
           "decimal-time-series", "string-time-series"]
@@ -250,8 +250,8 @@ module Utils
     #
     # Returns true if top values query is valid
     def validator
-      true if !exceeds_queries_limit && 
-              !exceeds_fields_limit && 
+      true if !exceeds_queries_limit &&
+              !exceeds_fields_limit &&
               !exceeds_values_contains_limit
     end
   end
