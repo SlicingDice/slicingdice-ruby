@@ -64,7 +64,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
       write_key = options.fetch(:write_key, nil)
       timeout = options.fetch(:timeout, 60)
       uses_test_endpoint = options.fetch(:uses_test_endpoint, false)
-      base_url= options.fetch(:base_url, 60)
+      base_url= options.fetch(:base_url, BASE_URL)
     super(master_key, custom_key, read_key, write_key, timeout)
     @list_query_types = [
       "count/entity", "count/event", "count/entity/total",
