@@ -43,10 +43,10 @@ client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: true)
 index_data = {
     "user50@slicingdice.com" => {
         "age" => 22
-    }
+    },
+    "auto-create-fields" => true
 }
-auto_create_fields = true
-client.index(index_data, auto_create_fields)
+client.index(index_data)
 
 # Querying data
 query_data = {

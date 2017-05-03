@@ -131,8 +131,6 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Send a indexation to Slicing Dice API
   #
   # data - A Hash in the Slicing Dice field format
-  # auto_create_fields - if true Slicing Dice API will create nonexistent
-  # fields automatically
   #
   # Examples
   #
@@ -145,13 +143,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #    => {"status" => "SUCCESS"}
   #
   # Returns a hash with api result
-  def index(query, auto_create_fields = false)
+  def index(query)
     base_url = wrapper_test()
-    if auto_create_fields
-      query['auto-create-fields'] = true
-    else
-      query['auto-create-fields'] = auto_create_fields
-    end
     sd_validator = Utils::IndexValidator.new(query)
     if sd_validator.validator
       url = base_url + METHODS[:index]
