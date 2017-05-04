@@ -50,7 +50,8 @@ client.index(index_data, auto_create_fields)
 
 # Querying data
 query_data = {
-    "users-between-20-and-40" => [
+    "query-name" => "users-between-20-and-40",
+    "query" => [
         {
             "age" => {
                 "range" => [
@@ -303,29 +304,36 @@ Count the number of entities matching the given query. This method corresponds t
 ```ruby
 require 'rbslicer'
 client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
-query = {
-    'corolla-or-fit' => [
-        {
-            'car-model' => {
-                'equals' => 'toyota corolla'
+query = [
+    {
+        'query-name' => 'corolla-or-fit',
+        'query' => [
+            {
+                'car-model' => {
+                    'equals' => 'toyota corolla'
+                }
+            },
+            'or',
+            {
+                'car-model' => {
+                    'equals' => 'honda fit'
+                }
             }
-        },
-        'or',
-        {
-            'car-model' => {
-                'equals' => 'honda fit'
+        ],
+        'bypass-cache' => false
+    },
+    {
+        'query-name' => 'ford-ka',
+        'query' => [
+            {
+                'car-model' => {
+                    'equals' => 'ford ka'
+                }
             }
-        },
-    ],
-    'ford-ka' => [
-        {
-            'car-model' => {
-                'equals' => 'ford ka'
-            }
-        }
-    ],
-    'bypass-cache' => false
-}
+        ],
+        'bypass-cache' => false
+    }
+]
 print client.count_entity(query)
 ```
 
@@ -350,31 +358,38 @@ Count the number of occurrences for time-series events matching the given query.
 ```ruby
 require 'rbslicer'
 client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
-query = {
-  "test-drives-in-ny" => [
+query = [
     {
-      "test-drives" => {
-        "equals" => "NY",
-        "between" => [
-          "2016-08-16T00:00:00Z",
-          "2016-08-18T00:00:00Z"
-        ]
-      }
-    }
-  ],
-  "test-drives-in-ca" => [
+        'query-name' => 'test-drives-in-ny',
+        'query' => [
+            {
+                'test-drives' => {
+                    'equals' => 'NY',
+                    'between' => [
+                        '2016-08-16T00:00:00Z',
+                        '2016-08-18T00:00:00Z'
+                    ]
+                }
+            }
+        ],
+        'bypass-cache' => true
+    },
     {
-      "test-drives" => {
-        "equals" => "CA",
-        "between" => [
-          "2016-04-04T00:00:00Z",
-          "2016-04-06T00:00:00Z"
-        ]
-      }
+        'query-name' => 'test-drives-in-ca',
+        'query' => [
+            {
+                'test-drives' => {
+                    'equals' => 'CA',
+                    'between' => [
+                        '2016-04-04T00:00:00Z',
+                        '2016-04-06T00:00:00Z'
+                    ]
+                }
+            }
+        ],
+        'bypass-cache' => true
     }
-  ],
-  "bypass-cache" => true
-}
+]
 puts client.count_event(query)
 ```
 
