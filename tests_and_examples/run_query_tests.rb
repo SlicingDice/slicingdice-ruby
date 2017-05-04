@@ -158,7 +158,7 @@ class SlicingDiceTester
     else
       entity_or_entities = 'entities'
     end
-    puts "  Indexing #{test['fields'].length} #{entity_or_entities}"
+    puts "  Indexing #{test['index'].length} #{entity_or_entities}"
 
     index_data = translate_field_names(test['index'])
     if @verbose
