@@ -225,7 +225,8 @@ index_data = {
       "value" => "NY",
       "date" => "2016-08-17T13:23:47+00:00"
     }
-  }
+  },
+  "auto-create-fields" => true
 }
 puts client.index(index_data)
 ```
