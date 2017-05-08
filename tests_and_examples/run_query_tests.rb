@@ -151,7 +151,7 @@ class SlicingDiceTester
   # test(Hash) - Hash containing test name, fields metadata, data to be
   # indexed, query, and expected results.
   def index_data(test)
-    is_singular = test['fields'].length == 1
+    is_singular = test['index'].length == 1
     entity_or_entities = nil
     if is_singular
       entity_or_entities = 'entity'
@@ -264,8 +264,8 @@ def main
   # Testing class with demo API key
   # To get a new Demo API key visit: http://panel.slicingdice.com/docs/#api-details-api-connection-api-keys-demo-key
   sd_tester = SlicingDiceTester.new(
-      api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vOThtIiwicGVybWlzc2lvbl9sZXZlbCI6MywicHJvamVjdF9pZCI6MjU5LCJjbGllbnRfaWQiOjEwfQ.pVXws7Dcz4qLAJ1n_Pu1l4nC3NuxQVocrmBY6wU2UJw',
-      verbose=false)
+    api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vOThtIiwicGVybWlzc2lvbl9sZXZlbCI6MywicHJvamVjdF9pZCI6MjU5LCJjbGllbnRfaWQiOjEwfQ.pVXws7Dcz4qLAJ1n_Pu1l4nC3NuxQVocrmBY6wU2UJw',
+  verbose=false)
 
   begin
     query_types.each{|query_type| sd_tester.run_tests(query_type)}
