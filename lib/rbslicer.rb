@@ -136,12 +136,12 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # Examples
   #
-  #    index_data = {
+  #    insert_data = {
   #      "1": {
   #        "model": "Toyota Corolla"
   #      }
   #    }
-  #    puts sd.index(index_data)
+  #    puts sd.index(insert_data)
   #    => {"status" => "SUCCESS"}
   #
   # Returns a hash with api result

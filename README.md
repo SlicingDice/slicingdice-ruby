@@ -40,13 +40,13 @@ require 'rbslicer'
 client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: true)
 
 # Indexing data
-index_data = {
+insert_data = {
     "user50@slicingdice.com" => {
         "age" => 22
     }
 }
 auto_create_fields = true
-client.index(index_data, auto_create_fields)
+client.index(insert_data, auto_create_fields)
 
 # Querying data
 query_data = {
@@ -193,7 +193,7 @@ Index data to existing entities or create new entities, if necessary. This metho
 ```ruby
 require 'rbslicer'
 client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
-index_data = {
+insert_data = {
   "user1@slicingdice.com" => {
     "car-model" => "Ford Ka",
     "year" => 2016
@@ -228,7 +228,7 @@ index_data = {
   },
   "auto-create-fields" => true
 }
-puts client.index(index_data)
+puts client.index(insert_data)
 ```
 
 #### Output example

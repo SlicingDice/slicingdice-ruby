@@ -67,7 +67,7 @@ class SlicingDiceTester
 
       begin
         create_fields test
-        index_data test
+        insert_data test
         result = execute_query(query_type, test)
       rescue StandardError => e
         result = {"result" => {"error" => e.to_s}}
@@ -150,7 +150,7 @@ class SlicingDiceTester
   #
   # test(Hash) - Hash containing test name, fields metadata, data to be
   # indexed, query, and expected results.
-  def index_data(test)
+  def insert_data(test)
     is_singular = test['index'].length == 1
     entity_or_entities = nil
     if is_singular
@@ -160,17 +160,17 @@ class SlicingDiceTester
     end
     puts "  Indexing #{test['index'].length} #{entity_or_entities}"
 
-    index_data = translate_field_names(test['index'])
+    insert_data = translate_field_names(test['index'])
     if @verbose
-      puts index_data
+      puts insert_data
     end
 
     auto_create_fields = false
-    if index_data.include? 'auto-create-fields'
-      auto_create_fields = index_data['auto-create-fields']
+    if insert_data.include? 'auto-create-fields'
+      auto_create_fields = insert_data['auto-create-fields']
     end
 
-    @client.index(index_data, auto_create_fields)
+    @client.index(insert_data, auto_create_fields)
 
     # Wait a few seconds so the data can be indexed by SlicingDice
     sleep @sleep_time
