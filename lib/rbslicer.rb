@@ -26,8 +26,8 @@ BASE_URL = ENV['SD_API_ADDRESS'].nil? ? DEFAULT_API : ENV['SD_API_ADDRESS']
 
 # Public: A Hash with all Slicing Dice methods
 METHODS = {
-  field: '/field/',
-  index: '/index/',
+  column: '/column/',
+  insert: '/insert/',
   query_count_entity: '/query/count/entity/',
   query_count_entity_total: '/query/count/entity/total/',
   query_count_event: '/query/count/event/',
@@ -37,24 +37,24 @@ METHODS = {
   query_data_extraction_result: '/data_extraction/result/',
   query_data_extraction_score: '/data_extraction/score/',
   query_saved: '/query/saved/',
-  projects: '/project/'
+  database: '/database/'
 }.freeze
 
 # Public: A ruby interface to Slicing Dice API
   #
   # Examples
   #
-  #    field_data = {
-  #     'name' => 'Rbslicer String Field',
+  #    column_data = {
+  #     'name' => 'Rbslicer String Column',
   #     'description' => 'Ruby Test Description',
   #     'type' => 'string',
   #     'cardinality' => 'low'
   #    }
   #    sd = SlicingDice.new('my-token')
-  #    puts sd.create_field(field_data)
+  #    puts sd.create_column(column_data)
   #    => {
   #    ...  "status" => "SUCCESS",
-  #    ...  "field_name" => "ruby-string-field"
+  #    ...  "column_name" => "ruby-string-column"
   #    ....}
 class SlicingDice < Rbslicer::SlicingDiceAPI
   def initialize(options = {})
@@ -84,55 +84,55 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     end
     return base_url
   end
-  # Public: Create field in Slicing Dice API
+  # Public: Create column in Slicing Dice API
   #
-  # query - A Hash in the Slicing Dice field format
+  # query - A Hash in the Slicing Dice column format
   #
   # Examples
   #
-  #    field_data = {
-  #     'name' => 'Rbslicer String Field',
+  #    column_data = {
+  #     'name' => 'Rbslicer String Column',
   #     'description' => 'Ruby Test Description',
   #     'type' => 'string',
   #     'cardinality' => 'low'
   #    }
-  #    puts sd.create_field(field_data)
+  #    puts sd.create_column(column_data)
   #    => {
   #    ...  "status" => "SUCCESS",
-  #    ...  "field_name" => "ruby-string-field"
+  #    ...  "column_name" => "ruby-string-column"
   #    ....}
   #
   # Returns a hash with api result
-  def create_field(query)
+  def create_column(query)
     base_url = wrapper_test()
     if query.kind_of?(Array)
-      query.each { |q| field_create(q) }
+      query.each { |q| column_create(q) }
     else
-      field_create(query)
+      column_create(query)
     end
   end
 
-  def field_create(query)
+  def column_create(query)
     base_url = wrapper_test()
-    sd_validator = Utils::FieldValidator.new(query)
+    sd_validator = Utils::ColumnValidator.new(query)
     if sd_validator.validator
-      url = base_url + METHODS[:field]
+      url = base_url + METHODS[:column]
       make_request(url, "post", 2, data= query)
     end
   end
 
-  # Public: Get all fields created on Slicing Dice API
-  def get_fields()
+  # Public: Get all columns created on Slicing Dice API
+  def get_columns()
     base_url = wrapper_test()
-    url = base_url + METHODS[:field]
+    url = base_url + METHODS[:column]
     make_request url, "get", 2
   end
 
-  # Public: Send a indexation to Slicing Dice API
+  # Public: Send a insertion to Slicing Dice API
   #
-  # data - A Hash in the Slicing Dice field format
-  # auto_create_fields - if true Slicing Dice API will create nonexistent
-  # fields automatically
+  # data - A Hash in the Slicing Dice column format
+  # auto_create_columns - if true Slicing Dice API will create nonexistent
+  # columns automatically
   #
   # Examples
   #
@@ -141,28 +141,23 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #        "model": "Toyota Corolla"
   #      }
   #    }
-  #    puts sd.index(insert_data)
+  #    puts sd.insert(insert_data)
   #    => {"status" => "SUCCESS"}
   #
   # Returns a hash with api result
-  def index(query, auto_create_fields = false)
+  def insert(query)
     base_url = wrapper_test()
-    if auto_create_fields
-      query['auto-create-fields'] = true
-    else
-      query['auto-create-fields'] = auto_create_fields
-    end
-    sd_validator = Utils::IndexValidator.new(query)
+    sd_validator = Utils::InsertValidator.new(query)
     if sd_validator.validator
-      url = base_url + METHODS[:index]
+      url = base_url + METHODS[:insert]
       make_request(url, "post", 1, data = query)
     end
   end
 
-  # Public: Get a list of projects active and inactive
-  def get_projects()
+  # Public: Get information about current database
+  def get_database()
     base_url = wrapper_test()
-    url = base_url + METHODS[:projects]
+    url = base_url + METHODS[:database]
     make_request url, "get", 2
   end
 
@@ -248,10 +243,10 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
       raise Exceptions::InvalidQueryException, 'The aggregation query must '\
                                                'have \'query\' property.'
     end
-    fields = query["query"]
-    if fields.length > 5
+    columns = query["query"]
+    if columns.length > 5
       raise Exceptions::MaxLimitExceptions, 'The aggregation query must have'\
-                                            ' up to 5 fields per request.'
+                                            ' up to 5 columns per request.'
     end
     make_request(url, "post", 0, data=query)
   end

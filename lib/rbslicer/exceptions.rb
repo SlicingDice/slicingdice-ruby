@@ -7,7 +7,7 @@ module Exceptions
 
   class SlicingDiceHTTPError < SlicingDiceException; end
 
-  class FieldCreateInternalException < SlicingDiceException; end
+  class ColumnCreateInternalException < SlicingDiceException; end
   
   # CLIENT API ERRORS
   class EmptyParameterException < StandardError; end
@@ -16,19 +16,19 @@ module Exceptions
 
   class WrongTypeException < StandardError; end
 
-  class InvalidIndexException < StandardError; end
+  class InvalidInsertException < StandardError; end
 
   class DatabaseOperationException < StandardError; end
 
   class InvalidQueryTypeException < StandardError; end
 
-  class InvalidFieldTypeException < StandardError; end
+  class InvalidColumnTypeException < StandardError; end
 
-  class InvalidFieldException < StandardError; end
+  class InvalidColumnException < StandardError; end
 
-  class InvalidFieldNameException < StandardError; end
+  class InvalidColumnNameException < StandardError; end
 
-  class InvalidFieldDescriptionException < StandardError; end
+  class InvalidColumnDescriptionException < StandardError; end
 
   class MaxLimitException < StandardError; end
 
@@ -47,9 +47,9 @@ module Exceptions
 
   class AuthInvalidRemoteException < SlicingDiceException; end
 
-  class CustomKeyInvalidFieldCreationException < SlicingDiceException; end
+  class CustomKeyInvalidColumnCreationException < SlicingDiceException; end
 
-  class CustomKeyInvalidPermissionForFieldException < SlicingDiceException; end
+  class CustomKeyInvalidPermissionForColumnException < SlicingDiceException; end
 
   class CustomKeyInvalidOperationException < SlicingDiceException; end
 
@@ -88,81 +88,81 @@ module Exceptions
 
   class AccountDisabledException < SlicingDiceException; end
 
-  # FIELD API ERRORS
-  class FieldMissingParamException < SlicingDiceException; end
+  # COLUMN API ERRORS
+  class ColumnMissingParamException < SlicingDiceException; end
 
-  class FieldTypeException < SlicingDiceException; end
+  class ColumnTypeException < SlicingDiceException; end
 
-  class FieldIntegerValuesException < SlicingDiceException; end
+  class ColumnIntegerValuesException < SlicingDiceException; end
 
-  class FieldAlreadyExistsException < SlicingDiceException; end
+  class ColumnAlreadyExistsException < SlicingDiceException; end
 
-  class FieldLimitException < SlicingDiceException; end
+  class ColumnLimitException < SlicingDiceException; end
 
-  class FieldTimeSeriesLimitException < SlicingDiceException; end
+  class ColumnTimeSeriesLimitException < SlicingDiceException; end
 
-  class FieldTimeSeriesSystemLimitException < SlicingDiceException; end
+  class ColumnTimeSeriesSystemLimitException < SlicingDiceException; end
 
-  class FieldDecimalTypeException < SlicingDiceException; end
+  class ColumnDecimalTypeException < SlicingDiceException; end
 
-  class FieldStorageValueException < SlicingDiceException; end
+  class ColumnStorageValueException < SlicingDiceException; end
 
-  class FieldInvalidApiName < SlicingDiceException; end
+  class ColumnInvalidApiName < SlicingDiceException; end
 
-  class FieldInvalidNameException < SlicingDiceException; end
+  class ColumnInvalidNameException < SlicingDiceException; end
 
-  class FieldInvalidDescriptionException < SlicingDiceException; end
+  class ColumnInvalidDescriptionException < SlicingDiceException; end
 
-  class FieldExceedDescriptionlengthException < SlicingDiceException; end
+  class ColumnExceedDescriptionlengthException < SlicingDiceException; end
 
-  class FieldInvalidCardinalityException < SlicingDiceException; end
+  class ColumnInvalidCardinalityException < SlicingDiceException; end
 
-  class FieldDecimalLimitException < SlicingDiceException; end
+  class ColumnDecimalLimitException < SlicingDiceException; end
 
-  class FieldRangeLimitException < SlicingDiceException; end
+  class ColumnRangeLimitException < SlicingDiceException; end
 
-  class FieldExceededMaxNameLenghtException < SlicingDiceException; end
+  class ColumnExceededMaxNameLenghtException < SlicingDiceException; end
 
-  class FieldExceededMaxApiNameLenghtException < SlicingDiceException; end
+  class ColumnExceededMaxApiNameLenghtException < SlicingDiceException; end
 
-  class FieldEmptyEntityIdException < SlicingDiceException; end
+  class ColumnEmptyEntityIdException < SlicingDiceException; end
 
-  class FieldExceededPermitedValueException < SlicingDiceException; end
+  class ColumnExceededPermitedValueException < SlicingDiceException; end
 
-  class FieldInvalidApiNameException < SlicingDiceException; end
+  class ColumnInvalidApiNameException < SlicingDiceException; end
 
-  # INDEX API ERRORS
-  class IndexInvalidDecimalPlacesException < SlicingDiceException; end
+  # INSERTION API ERRORS
+  class InsertInvalidDecimalPlacesException < SlicingDiceException; end
 
-  class IndexEntityValueTypeException < SlicingDiceException; end
+  class InsertEntityValueTypeException < SlicingDiceException; end
 
-  class IndexFieldNameTypeException < SlicingDiceException; end
+  class InsertColumnNameTypeException < SlicingDiceException; end
 
-  class IndexFieldTypeException < SlicingDiceException; end
+  class InsertColumnTypeException < SlicingDiceException; end
 
-  class IndexEntityNameTooBigException < SlicingDiceException; end
+  class InsertEntityNameTooBigException < SlicingDiceException; end
 
-  class IndexFieldValueTooBigException < SlicingDiceException; end
+  class InsertColumnValueTooBigException < SlicingDiceException; end
 
-  class IndexTimeSeriesDateFormatException < SlicingDiceException; end
+  class InsertTimeSeriesDateFormatException < SlicingDiceException; end
 
-  class IndexFieldNotActiveException < SlicingDiceException; end
+  class InsertColumnNotActiveException < SlicingDiceException; end
 
-  class IndexLimitException < SlicingDiceException; end
+  class InsertLimitException < SlicingDiceException; end
 
-  class IndexIdLimitException < SlicingDiceException; end
+  class InsertIdLimitException < SlicingDiceException; end
 
-  class IndexFieldLimitException < SlicingDiceException; end
+  class InsertColumnLimitException < SlicingDiceException; end
 
-  class IndexDateFormatException < SlicingDiceException; end
+  class InsertDateFormatException < SlicingDiceException; end
 
-  class IndexFieldStringEmptyValueException < SlicingDiceException; end
+  class InsertColumnStringEmptyValueException < SlicingDiceException; end
 
-  class IndexFieldTimeseriesInvalidParameterException < SlicingDiceException; end
+  class InsertColumnTimeseriesInvalidParameterException < SlicingDiceException; end
 
-  class IndexFieldNumericInvalidValueException < SlicingDiceException; end
+  class InsertColumnNumericInvalidValueException < SlicingDiceException; end
 
-  class IndexFieldTimeseriesMissingValueException < SlicingDiceException; end
+  class InsertColumnTimeseriesMissingValueException < SlicingDiceException; end
 
   class QueryTimeSeriesInvalidPrecisionSecondsException < SlicingDiceException; end
 
@@ -185,7 +185,7 @@ module Exceptions
 
   class QueryIncorrectOperatorUsageException < SlicingDiceException; end
 
-  class QueryFieldNotActiveException < SlicingDiceException; end
+  class QueryColumnNotActiveException < SlicingDiceException; end
 
   class QueryMissingOperatorException < SlicingDiceException; end
 
@@ -197,7 +197,7 @@ module Exceptions
 
   class QueryIntegerException < SlicingDiceException; end
 
-  class QueryFieldLimitException < SlicingDiceException; end
+  class QueryColumnLimitException < SlicingDiceException; end
 
   class QueryLevelLimitException < SlicingDiceException; end
 
@@ -241,7 +241,7 @@ module Exceptions
 
   class QueryDataExtractionPageTokenValueException < SlicingDiceException; end
 
-  class QueryDataExtractionFieldLimitException < SlicingDiceException; end
+  class QueryDataExtractionColumnLimitException < SlicingDiceException; end
 
   class QueryExistsEntityEmptyException < SlicingDiceException; end
 
@@ -265,10 +265,10 @@ module Exceptions
 
   class QueryInvalidParameterUsageException < SlicingDiceException; end
 
-  class QueryParameterInvalidFieldUsageException < SlicingDiceException; end
+  class QueryParameterInvalidColumnUsageException < SlicingDiceException; end
 
-  class QueryInvalidFieldUsageException < SlicingDiceException; end
+  class QueryInvalidColumnUsageException < SlicingDiceException; end
 
-  class IndexInvalidRangeException < SlicingDiceException; end
+  class InsertInvalidRangeException < SlicingDiceException; end
 
 end

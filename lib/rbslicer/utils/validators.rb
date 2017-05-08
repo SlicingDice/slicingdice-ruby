@@ -4,142 +4,142 @@ require 'rbslicer/utils/data_utils'
 require 'rbslicer/exceptions'
 
 module Utils
-  # Public: Validates index data to send API
-  class IndexValidator
-    # Public: Initialize IndexValidator object
+  # Public: Validates insert data to send API
+  class InsertValidator
+    # Public: Initialize InsertValidator object
     #
     # hash_data - A Hash data to analyze
     def initialize(hash_data)
       @hash_data = hash_data
     end
 
-    # Public: Check if index have empty/invalid fields
+    # Public: Check if insert have empty/invalid columns
     #
-    # Returns false if don't have empty/invalid fields
-    def empty_field?
+    # Returns false if don't have empty/invalid columns
+    def empty_column?
       to_values = @hash_data.any? { |v| v.nil? }
       to_keys = @hash_data.values.any? { |v| v.nil? }
       if to_values || to_keys
-        raise Exceptions::InvalidIndexException, 'This index has invalid keys '\
+        raise Exceptions::InvalidInsertException, 'This insert has invalid keys '\
                                                   'or values.'
       end
       false
     end
 
-    # Public: Validates index data.
+    # Public: Validates insert data.
     #
-    # Returns true if index data is valid
+    # Returns true if insert data is valid
     def validator
-      true unless empty_field?
+      true unless empty_column?
     end
 
-    private :empty_field?
+    private :empty_column?
   end
 
-  # Public: Validates field to send API
-  class FieldValidator
-    # Public: Initialize IndexValidator object
+  # Public: Validates column to send API
+  class ColumnValidator
+    # Public: Initialize InsertValidator object
     #
     # hash_data - A Hash data to analyze
     def initialize(hash_data)
       @hash_data = hash_data
-      @valid_type_fields =
+      @valid_type_columns =
         ["unique-id", "boolean", "string", "integer", "decimal",
           "enumerated", "date", "integer-time-series",
           "decimal-time-series", "string-time-series"]
     end
 
-    # Public: Validates key 'name' in field
+    # Public: Validates key 'name' in column
     #
     # Returns true if key 'name' is valid for Slicing Dice
     def validate_name
       if @hash_data.key?('name')
         name = @hash_data['name']
         if Utils::DataUtils.string_empty name
-          raise Exceptions::InvalidFieldNameException, 'The field\'s name '\
+          raise Exceptions::InvalidColumnNameException, 'The column\'s name '\
                                                         'can\'t be empty/None.'
         elsif name.length > 80
-          raise Exceptions::InvalidFieldNameException, 'The field\'s name '\
+          raise Exceptions::InvalidColumnNameException, 'The column\'s name '\
                                           'have a very big content. (Max: 80 chars)'
         end
       else
-        raise Exceptions::InvalidFieldException, 'The field should have a name.'
+        raise Exceptions::InvalidColumnException, 'The column should have a name.'
       end
       true
     end
 
-    # Public: Validates key 'description' in field
+    # Public: Validates key 'description' in column
     #
     # Returns true if description is valid for Slicing Dice
     def validate_description
       description = @hash_data['description']
       if Utils::DataUtils.string_empty description
-        raise Exceptions::InvalidFieldDescriptionException, 'The field\'s '\
+        raise Exceptions::InvalidColumnDescriptionException, 'The column\'s '\
                                             'description can\'t be empty/None.'
       elsif description.length > 300
-        raise Exceptions::InvalidFieldDescriptionException, 'The field\'s '\
+        raise Exceptions::InvalidColumnDescriptionException, 'The column\'s '\
                             'description have a very big content. (Max: 300 chars)'
       end
       true
     end
 
 
-    # Public: Validates key 'type' in field
+    # Public: Validates key 'type' in column
     #
     # Returns true if key 'type' is valid for Slicing Dice
-    def validate_field_type
+    def validate_column_type
       unless @hash_data.key?('type')
-        raise Exceptions::InvalidFieldException, 'The field should have a type.'
+        raise Exceptions::InvalidColumnException, 'The column should have a type.'
       end
-      type_field = @hash_data['type']
-      unless @valid_type_fields.include? type_field
-        raise Exceptions::InvalidFieldTypeException, 'This field have a '\
+      type_column = @hash_data['type']
+      unless @valid_type_columns.include? type_column
+        raise Exceptions::InvalidColumnTypeException, 'This column have a '\
                                                       'invalid type.'
       end
-      if type_field == 'integer' && @hash_data.key?('cardinality')
-        raise Exceptions::InvalidFieldException, 'Invalid field.'
+      if type_column == 'integer' && @hash_data.key?('cardinality')
+        raise Exceptions::InvalidColumnException, 'Invalid column.'
       end
     end
 
-    # Public: Check if field has key 'cardinality'
-    # This method is used to check if String type field is valid
+    # Public: Check if column has key 'cardinality'
+    # This method is used to check if String type column is valid
     def check_str_type_integrity
       unless @hash_data.key?('cardinality')
-        raise Exceptions::InvalidFieldException, 'The field with type string '\
+        raise Exceptions::InvalidColumnException, 'The column with type string '\
                                       'should have \'cardinality\' key.'
       end
       cardinality_types = ["high", "low"]
       unless cardinality_types.include? @hash_data['cardinality']
-        raise Exceptions::InvalidFieldException, 'The field \'cardinality\' '\
+        raise Exceptions::InvalidColumnException, 'The column \'cardinality\' '\
                                                   'has invalid value.'
       end
     end
 
-    # Public: Check if field has a valid decimal types
-    def validate_field_decimal_places
+    # Public: Check if column has a valid decimal types
+    def validate_column_decimal_places
       decimal_types = ["decimal", "decimal-time-series"]
       unless decimal_types.include? @hash_data['type']
-        raise Exceptions::InvalidFieldException,  'This field is only accepted'\
+        raise Exceptions::InvalidColumnException,  'This column is only accepted'\
                                                   ' on type \'decimal\' or'
                                                   ' decimal-time-series'
       end
     end
 
-    # Public: Check if enumerated field is valid
+    # Public: Check if enumerated column is valid
     def validate_enumerated_type
       unless @hash_data.key? 'range'
-        raise Exceptions::InvalidFieldException, 'The \'enumerate\' type needs'\
+        raise Exceptions::InvalidColumnException, 'The \'enumerate\' type needs'\
                                                   ' \'range\' parameter.'
       end
     end
 
-    # Public: Validates field data
+    # Public: Validates column data
     #
-    # Returns true if field data has all requirements
+    # Returns true if column data has all requirements
     def validator
       validate_name
-      validate_field_type
-      validate_field_decimal_places if @hash_data.key? 'decimal-place'
+      validate_column_type
+      validate_column_decimal_places if @hash_data.key? 'decimal-place'
       validate_enumerated_type if @hash_data.key? 'enumerated'
       check_str_type_integrity if @hash_data['type'] == 'string'
       validate_description if @hash_data.key? 'description'
@@ -179,14 +179,14 @@ module Utils
             raise Exceptions::InvalidQueryException, 'The key \'limit\' in '\
                                                     'query has a invalid value.'
           end
-        elsif key == "fields"
+        elsif key == "columns"
           if !value.is_a?(Array)
-            raise Exceptions::InvalidQueryException, 'The key \'fields\' in '\
+            raise Exceptions::InvalidQueryException, 'The key \'columns\' in '\
                                                     'query has a invalid value.'
           else
             if value.length > 10
-              raise Exceptions::MaxLimitException, 'The key \'fields\' in '\
-                            'data extraction result must have up to 10 fields.'
+              raise Exceptions::MaxLimitException, 'The key \'columns\' in '\
+                            'data extraction result must have up to 10 columns.'
             end
           end
         elsif key == "query"
@@ -216,14 +216,14 @@ module Utils
       true if @queries.length > 5
     end
 
-    # Public: Verify if top values query exceeds fields limit
+    # Public: Verify if top values query exceeds columns limit
     #
     # Returns false if not exceeds
-    def exceeds_fields_limit
+    def exceeds_columns_limit
       @queries.each do |key, value|
         if value.length > 6
           raise Exceptions::MaxLimitException, "The query #{key} exceeds the "\
-                                                "limit of fields per query "\
+                                                "limit of columns per query "\
                                                 "in request"
         end
       end
@@ -251,7 +251,7 @@ module Utils
     # Returns true if top values query is valid
     def validator
       true if !exceeds_queries_limit &&
-              !exceeds_fields_limit &&
+              !exceeds_columns_limit &&
               !exceeds_values_contains_limit
     end
   end
