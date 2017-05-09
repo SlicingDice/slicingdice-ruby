@@ -43,10 +43,10 @@ client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: true)
 insert_data = {
     "user50@slicingdice.com" => {
         "age" => 22
-    }
+    },
+    "auto-create" => ["table", "column"]
 }
-auto_create_columns = true
-client.insert(insert_data, auto_create_columns)
+client.insert(insert_data)
 
 # Querying data
 query_data = {
@@ -214,7 +214,7 @@ insert_data = {
       "date" => "2016-08-17T13:23:47+00:00"
     }
   },
-  "auto-create-columns" => true
+  "auto-create" => ["table", "column"]
 }
 puts client.insert(insert_data)
 ```

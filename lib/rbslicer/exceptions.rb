@@ -77,7 +77,7 @@ module Exceptions
 
   class RequestIncorrectHttpException < SlicingDiceException; end
 
-  class RequestExceedLimitException < SlicingDiceException; end
+  class RequestExceededLimitException < SlicingDiceException; end
 
   # ACCOUNT ERRORS
   class AccountMissingPaymentMethodException < SlicingDiceException; end
@@ -113,7 +113,7 @@ module Exceptions
 
   class ColumnInvalidDescriptionException < SlicingDiceException; end
 
-  class ColumnExceedDescriptionlengthException < SlicingDiceException; end
+  class ColumnExceededDescriptionlengthException < SlicingDiceException; end
 
   class ColumnInvalidCardinalityException < SlicingDiceException; end
 
@@ -158,11 +158,11 @@ module Exceptions
 
   class InsertColumnStringEmptyValueException < SlicingDiceException; end
 
-  class InsertColumnTimeseriesInvalidParameterException < SlicingDiceException; end
+  class InsertColumnTimeSeriesInvalidParameterException < SlicingDiceException; end
 
   class InsertColumnNumericInvalidValueException < SlicingDiceException; end
 
-  class InsertColumnTimeseriesMissingValueException < SlicingDiceException; end
+  class InsertColumnTimeSeriesMissingValueException < SlicingDiceException; end
 
   class QueryTimeSeriesInvalidPrecisionSecondsException < SlicingDiceException; end
 

@@ -259,8 +259,8 @@ def main
   # Testing class with demo API key
   # To get a new Demo API key visit: http://panel.slicingdice.com/docs/#api-details-api-connection-api-keys-demo-key
   sd_tester = SlicingDiceTester.new(
-    api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vOTk5Nm0iLCJwZXJtaXNzaW9uX2xldmVsIjozLCJwcm9qZWN0X2lkIjoyOTk5NiwiY2xpZW50X2lkIjoxMH0.Ev0Qo-nFhhDuVbl8EQjkXZNDorGfNaQya3bc37oc9lQ',
-  verbose=false)
+    api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vOThtIiwicGVybWlzc2lvbl9sZXZlbCI6MywicHJvamVjdF9pZCI6MjU5LCJjbGllbnRfaWQiOjEwfQ.pVXws7Dcz4qLAJ1n_Pu1l4nC3NuxQVocrmBY6wU2UJw',
+    verbose=false)
 
   begin
     query_types.each{|query_type| sd_tester.run_tests(query_type)}
