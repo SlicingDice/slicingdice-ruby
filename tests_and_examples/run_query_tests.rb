@@ -165,12 +165,7 @@ class SlicingDiceTester
       puts insert_data
     end
 
-    auto_create_columns = false
-    if insert_data.include? 'auto-create-columns'
-      auto_create_columns = insert_data['auto-create-columns']
-    end
-
-    @client.insert(insert_data, auto_create_columns)
+    @client.insert(insert_data)
 
     # Wait a few seconds so the data can be inserted by SlicingDice
     sleep @sleep_time
@@ -264,7 +259,7 @@ def main
   # Testing class with demo API key
   # To get a new Demo API key visit: http://panel.slicingdice.com/docs/#api-details-api-connection-api-keys-demo-key
   sd_tester = SlicingDiceTester.new(
-    api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vOThtIiwicGVybWlzc2lvbl9sZXZlbCI6MywicHJvamVjdF9pZCI6MjU5LCJjbGllbnRfaWQiOjEwfQ.pVXws7Dcz4qLAJ1n_Pu1l4nC3NuxQVocrmBY6wU2UJw',
+    api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vOTk5Nm0iLCJwZXJtaXNzaW9uX2xldmVsIjozLCJwcm9qZWN0X2lkIjoyOTk5NiwiY2xpZW50X2lkIjoxMH0.Ev0Qo-nFhhDuVbl8EQjkXZNDorGfNaQya3bc37oc9lQ',
   verbose=false)
 
   begin
