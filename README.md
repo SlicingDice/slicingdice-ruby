@@ -263,14 +263,21 @@ puts client.exists_entity(ids)
 ```
 
 ### `count_entity_total()`
-Count the number of inserted entities. This method corresponds to a [GET request at /query/count/entity/total](http://panel.slicingdice.com/docs/#api-details-api-endpoints-get-query-count-entity-total).
+Count the number of inserted entities. This method corresponds to a [POST request at /query/count/entity/total](http://panel.slicingdice.com/docs/#api-details-api-endpoints-get-query-count-entity-total).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
 client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
-puts client.count_entity_total()
+
+tables = {
+    "tables" => [
+        "default"
+    ]
+}
+
+puts client.count_entity_total(tables)
 ```
 
 #### Output example
