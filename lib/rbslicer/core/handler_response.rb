@@ -27,9 +27,9 @@ module Core
       code = error['code'].to_i
       hash_errors = HelperHandlerExceptions::SLICER_EXCEPTIONS
       if hash_errors.key?(code)
-        raise hash_errors[code], error['message']
+        raise hash_errors[code], error
       else
-        raise Exceptions::SlicingDiceHTTPError, error['message']
+        raise Exceptions::SlicingDiceHTTPError, error
       end
     end
 

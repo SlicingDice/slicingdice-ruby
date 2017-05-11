@@ -3,8 +3,8 @@
 #  Tests SlicingDice endpoints.
 #
 #  This script tests SlicingDice by running tests suites, each composed by:
-#     - Creating fields
-#     - Indexing data
+#     - Creating columns
+#     - Inserting data
 #     - Querying
 #     - Comparing results
 #
@@ -29,8 +29,8 @@ class SlicingDiceTester
   def initialize(api_key, verbose=False)
     @client = SlicingDice.new(master_key: api_key, uses_test_endpoint: true)
 
-    # Translation table for fields with timestamp
-    @field_translation = {}
+    # Translation table for columns with timestamp
+    @column_translation = {}
 
     # Sleep time in seconds
     @sleep_time = 10
@@ -56,7 +56,7 @@ class SlicingDiceTester
     num_tests = test_data.length
 
     test_data.each_with_index do |test, i|
-      empty_field_translation
+      empty_column_translation
 
       puts "(#{i + 1}/#{num_tests}) Executing test \"#{test['name']}\""
 
@@ -66,8 +66,8 @@ class SlicingDiceTester
       puts "  Query type: #{query_type}"
 
       begin
-        create_fields test
-        index_data test
+        create_columns test
+        insert_data test
         result = execute_query(query_type, test)
       rescue StandardError => e
         result = {"result" => {"error" => e.to_s}}
@@ -78,9 +78,9 @@ class SlicingDiceTester
     end
   end
 
-  # Public: Empty field translation table so tests don't intefere each other.
-  def empty_field_translation
-    @field_translation = {}
+  # Public: Empty column translation table so tests don't intefere each other.
+  def empty_column_translation
+    @column_translation = {}
   end
 
   # Public: Load all test data from JSON file for a given query type.
@@ -94,47 +94,47 @@ class SlicingDiceTester
     JSON.parse(File.open(filename, 'r').read)
   end
 
-  # Public: Create fields for a given test.
+  # Public: Create columns for a given test.
   #
-  # test(Hash) - Hash containing test name, fields metadata, data to be
-  # indexed, query, and expected results.
-  def create_fields(test)
-    is_singular = test['fields'].length == 1
-    field_or_fields = nil
+  # test(Hash) - Hash containing test name, columns metadata, data to be
+  # inserted, query, and expected results.
+  def create_columns(test)
+    is_singular = test['columns'].length == 1
+    column_or_columns = nil
     if is_singular
-      field_or_fields = 'field'
+      column_or_columns = 'column'
     else
-      field_or_fields = 'fields'
+      column_or_columns = 'columns'
     end
 
-    puts "  Creating #{test['fields'].length} #{field_or_fields}"
+    puts "  Creating #{test['columns'].length} #{column_or_columns}"
 
-    test['fields'].each do |field|
-      append_timestamp_to_field_name(field)
-      @client.create_field(field)
+    test['columns'].each do |column|
+      append_timestamp_to_column_name(column)
+      @client.create_column(column)
 
       if @verbose
-        puts "    - #{field['api-name']}"
+        puts "    - #{column['api-name']}"
       end
     end
   end
 
-  # Public: Append integer timestamp to field name.
+  # Public: Append integer timestamp to column name.
   #
   # This technique allows the same test suite to be executed over and over
-  # again, since each execution will use different field names.
+  # again, since each execution will use different column names.
   #
-  # field(Hash) - Hash containing field data, such as "name" and
+  # column(Hash) - Hash containing column data, such as "name" and
   # "api-name".
-  def append_timestamp_to_field_name(field)
-    old_name = "\"#{field['api-name']}\""
+  def append_timestamp_to_column_name(column)
+    old_name = "\"#{column['api-name']}\""
 
     timestamp = get_timestamp()
-    field['name'] += timestamp
-    field['api-name'] += timestamp
-    new_name = "\"#{field['api-name']}\""
+    column['name'] += timestamp
+    column['api-name'] += timestamp
+    new_name = "\"#{column['api-name']}\""
 
-    @field_translation[old_name] = new_name
+    @column_translation[old_name] = new_name
   end
 
   # Public: Get integer timestamp in string format.
@@ -146,44 +146,39 @@ class SlicingDiceTester
     return now.round.to_s
   end
 
-  # Public: Index data for a given test on Slicing Dice API
+  # Public: Insert data for a given test on Slicing Dice API
   #
-  # test(Hash) - Hash containing test name, fields metadata, data to be
-  # indexed, query, and expected results.
-  def index_data(test)
-    is_singular = test['fields'].length == 1
+  # test(Hash) - Hash containing test name, columns metadata, data to be
+  # inserted, query, and expected results.
+  def insert_data(test)
+    is_singular = test['insert'].length == 1
     entity_or_entities = nil
     if is_singular
       entity_or_entities = 'entity'
     else
       entity_or_entities = 'entities'
     end
-    puts "  Indexing #{test['fields'].length} #{entity_or_entities}"
+    puts "  Inserting #{test['insert'].length} #{entity_or_entities}"
 
-    index_data = translate_field_names(test['index'])
+    insert_data = translate_column_names(test['insert'])
     if @verbose
-      puts index_data
+      puts insert_data
     end
 
-    auto_create_fields = false
-    if index_data.include? 'auto-create-fields'
-      auto_create_fields = index_data['auto-create-fields']
-    end
+    @client.insert(insert_data)
 
-    @client.index(index_data, auto_create_fields)
-
-    # Wait a few seconds so the data can be indexed by SlicingDice
+    # Wait a few seconds so the data can be inserted by SlicingDice
     sleep @sleep_time
   end
 
-  # Public: Translate field name to match field name with timestamp.
+  # Public: Translate column name to match column name with timestamp.
   #
-  # json_data - JSON data to have the field name translated.
+  # json_data - JSON data to have the column name translated.
   #
-  # Returns a JSON data with new field name.
-  def translate_field_names(json_data)
+  # Returns a JSON data with new column name.
+  def translate_column_names(json_data)
     data_string = JSON.dump json_data
-    @field_translation.each do |old_name, new_name|
+    @column_translation.each do |old_name, new_name|
       data_string = data_string.gsub(old_name, new_name)
     end
     JSON.load data_string
@@ -191,12 +186,12 @@ class SlicingDiceTester
 
   # Public: Compare query expected and received results, exiting if they differ.
   #
-  # test - Hash containing test name, fields metadata, data to be
-  #   indexed, query, and expected results.
+  # test - Hash containing test name, columns metadata, data to be
+  #   inserted, query, and expected results.
   # result - Hash containing received result after querying
   #   SlicingDice.
   def compare_result(test, result)
-    expected = translate_field_names(test['expected'])
+    expected = translate_column_names(test['expected'])
     expected.each do |key, value|
       if value == 'ignore'
         next
@@ -221,10 +216,10 @@ class SlicingDiceTester
   #
   # query_type - String containing the name of the query that will be
   #   tested. This name must match the JSON file name as well.
-  # test - Hash containing test name, fields metadata, data to be
-  #   indexed, query, and expected results.
+  # test - Hash containing test name, columns metadata, data to be
+  #   inserted, query, and expected results.
   def execute_query(query_type, test)
-    query_data = translate_field_names(test['query'])
+    query_data = translate_column_names(test['query'])
     puts '  Querying'
 
     if @verbose
@@ -264,8 +259,8 @@ def main
   # Testing class with demo API key
   # To get a new Demo API key visit: http://panel.slicingdice.com/docs/#api-details-api-connection-api-keys-demo-key
   sd_tester = SlicingDiceTester.new(
-      api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vOThtIiwicGVybWlzc2lvbl9sZXZlbCI6MywicHJvamVjdF9pZCI6MjU5LCJjbGllbnRfaWQiOjEwfQ.pVXws7Dcz4qLAJ1n_Pu1l4nC3NuxQVocrmBY6wU2UJw',
-      verbose=false)
+    api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vOThtIiwicGVybWlzc2lvbl9sZXZlbCI6MywicHJvamVjdF9pZCI6MjU5LCJjbGllbnRfaWQiOjEwfQ.pVXws7Dcz4qLAJ1n_Pu1l4nC3NuxQVocrmBY6wU2UJw',
+    verbose=false)
 
   begin
     query_types.each{|query_type| sd_tester.run_tests(query_type)}
