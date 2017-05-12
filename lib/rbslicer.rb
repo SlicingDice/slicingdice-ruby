@@ -215,10 +215,15 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #                the total query will be performed
   #
   # Returns a count entity total query result
-  def count_entity_total(tables={})
+  def count_entity_total(tables=[])
     base_url = wrapper_test()
     url = base_url + METHODS[:query_count_entity_total]
-    make_request(url, "post", 0, data=tables)
+
+    query = {
+      "tables" => tables
+    }
+
+    make_request(url, "post", 0, data=query)
   end
 
   # Public: Make a count event query in SlicingDice API
