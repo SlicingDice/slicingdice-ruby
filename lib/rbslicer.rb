@@ -287,7 +287,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     query = {
       'ids' => ids
     }
-    if table != nil
+    if table.nil?
       query['table'] = table
     end
     make_request(url, "post", 0, data=query)
