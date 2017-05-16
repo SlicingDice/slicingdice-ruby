@@ -266,9 +266,10 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Check if a list of entities exists in SlicingDice API
   #
   # ids(Array) - A Array with ids to be checked
+  # table(String) - In which table entities check be checked
   #
   # Returns a Hash with ids that exists and that don't exits
-  def exists_entity(ids)
+  def exists_entity(ids, table=nil)
     base_url = wrapper_test()
     url = base_url + METHODS[:query_exists_entity]
     if ids.length > 100
@@ -278,6 +279,9 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     query = {
       'ids' => ids
     }
+    if table != nil
+      query['table'] = table
+    end
     make_request(url, "post", 0, data=query)
   end
 
