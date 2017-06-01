@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.0.1]
+### Updated
+- Update data extraction validator to support order parameter
+
 ## [2.0.0]
 ### Updated
 - Update API errors code
