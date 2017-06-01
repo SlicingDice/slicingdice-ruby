@@ -195,6 +195,12 @@ module Utils
           if !value.is_a?(Array)
             raise Exceptions::InvalidQueryException, 'The key \'order\' in '\
                                                     'query has a invalid value.'
+          elsif value.nil?
+            raise Exceptions::InvalidQueryException, 'The key \'order\' in '\
+                                                    'query has a null value.'
+          elsif value.empty?
+            raise Exceptions::InvalidQueryException, 'The key \'order\' in '\
+                                                    'query has a empty array.'
           end
         else
           raise Exceptions::InvalidQueryException, "This query have the invalid"\
