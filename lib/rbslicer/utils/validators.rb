@@ -191,6 +191,11 @@ module Utils
           end
         elsif key == "query"
           true
+        elsif key == "order"
+          if !value.is_a?(Array)
+            raise Exceptions::InvalidQueryException, 'The key \'order\' in '\
+                                                    'query has a invalid value.'
+          end
         else
           raise Exceptions::InvalidQueryException, "This query have the invalid"\
                                                   "key #{key}"
