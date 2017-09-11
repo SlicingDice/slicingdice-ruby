@@ -1,5 +1,9 @@
 # Change Log
 
+## [2.0.2]
+### Updated
+- Correct data extraction validator to accept columns: all
+
 ## [2.0.1]
 ### Updated
 - Update data extraction validator to support order parameter
