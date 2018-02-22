@@ -29,4 +29,6 @@ module Exceptions
 
   class IndexColumnsLimitException < SlicingDiceException; end
 
+  class InvalidQueryException < SlicingDiceException; end
+
 end

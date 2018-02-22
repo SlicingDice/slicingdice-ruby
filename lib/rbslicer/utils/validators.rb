@@ -181,8 +181,10 @@ module Utils
           end
         elsif key == "columns"
           if !value.is_a?(Array)
-            raise Exceptions::InvalidQueryException, 'The key \'columns\' in '\
-                                                    'query has a invalid value.'
+            if value != "all"
+              raise Exceptions::InvalidQueryException, 'The key \'columns\' in '\
+                                                      'query has a invalid value.'
+            end
           else
             if value.length > 10
               raise Exceptions::MaxLimitException, 'The key \'columns\' in '\
@@ -201,7 +203,7 @@ module Utils
           end
         else
           raise Exceptions::InvalidQueryException, "This query have the invalid"\
-                                                  "key #{key}"
+                                                  " key #{key}"
         end
       end
       true
