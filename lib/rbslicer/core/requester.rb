@@ -19,7 +19,7 @@ module Core
     # data(Hash) - A Hash to send in request
     #
     # Returns a object with result request
-    def run(url, headers, req_type, data = nil)
+    def run(url, headers, req_type, data = nil, sql = false)
       begin
         uri = URI.parse(url)
         http = Net::HTTP.new(uri.host, uri.port)
@@ -29,12 +29,18 @@ module Core
         http.read_timeout = @timeout
         http.verify_mode = OpenSSL::SSL::VERIFY_NONE
         requester = nil
+        parsed_data = data
+
+        if !sql 
+          parsed_data = data.to_json
+        end
+
         if req_type == "post"
           requester = Net::HTTP::Post.new(uri.request_uri, initheader = headers)
-          requester.body = data.to_json
+          requester.body = parsed_data
         elsif req_type == "put"
           requester = Net::HTTP::Put.new(uri.request_uri, initheader = headers)
-          requester.body = data.to_json
+          requester.body = parsed_data
         elsif req_type == "get"
           requester = Net::HTTP::Get.new(uri.request_uri, initheader = headers)
         elsif req_type == "delete"

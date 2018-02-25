@@ -33,7 +33,7 @@ class SlicingDiceTester
     @column_translation = {}
 
     # Sleep time in seconds
-    @sleep_time = 10
+    @sleep_time = 5
     # Directory containing examples to test
     @path = 'examples/'
     # Examples file format
@@ -44,6 +44,8 @@ class SlicingDiceTester
     @failed_tests = []
 
     @verbose = verbose
+
+    @per_test_insert = false
   end
 
   attr_accessor :num_successes, :num_fails, :num_fails, :failed_tests
@@ -54,6 +56,17 @@ class SlicingDiceTester
   def run_tests(query_type)
     test_data = load_test_data(query_type)
     num_tests = test_data.length
+
+    @per_test_insert = test_data[0].key?("insert")
+    
+    if !@per_test_insert
+      insertion_data = load_test_data(query_type, suffix="_insert")
+      insertion_data.each do |insert_command|
+        @client.insert(insert_command)
+      end
+
+      sleep @sleep_time
+    end
 
     test_data.each_with_index do |test, i|
       empty_column_translation
@@ -66,8 +79,10 @@ class SlicingDiceTester
       puts "  Query type: #{query_type}"
 
       begin
-        create_columns test
-        insert_data test
+        if @per_test_insert
+          create_columns test
+          insert_data test
+        end
         result = execute_query(query_type, test)
       rescue StandardError => e
         result = {"result" => {"error" => e.to_s}}
@@ -89,8 +104,8 @@ class SlicingDiceTester
   # tested. This name must match the JSON file name as well.
   #
   # Returns test data as a Hash.
-  def load_test_data(query_type)
-    filename = @path + query_type + @extension
+  def load_test_data(query_type, suffix = "")
+    filename = @path + query_type + suffix + @extension
     JSON.parse(File.open(filename, 'r').read)
   end
 
@@ -191,13 +206,17 @@ class SlicingDiceTester
   # result - Hash containing received result after querying
   #   SlicingDice.
   def compare_result(test, result)
-    expected = translate_column_names(test['expected'])
+    if @per_test_insert
+      expected = translate_column_names(test['expected'])
+    else
+      expected = test['expected']
+    end
     expected.each do |key, value|
       if value == 'ignore'
         next
       end
 
-      if value != result[key]
+      if !compare_values(value, result[key])
         @num_fails += 1
         @failed_tests.push(test['name'])
 
@@ -212,6 +231,51 @@ class SlicingDiceTester
     puts "  Status: Passed"
   end
 
+  def compare_values(expected, got)
+    if expected.is_a?(Hash)
+      if !got.is_a?(Hash)
+        return false
+      end
+
+      if expected.length != got.length
+        return false
+      end
+
+      expected.each do |key, value|
+        got_value = got[key]
+        if !compare_values(value, got_value)
+          return false
+        end
+      end
+
+      return true
+    elsif expected.is_a?(Array)
+      if !got.is_a?(Array)
+        return false
+      end
+
+      if expected.length != got.length
+        return false
+      end
+
+      expected.each do |value|
+        has_value = false
+        got.each do |value_got|
+          if compare_values(value, value_got)
+            has_value = true
+          end
+        end
+        if !has_value
+          return false
+        end
+      end
+
+      return true
+    end
+
+    return expected == got
+  end
+
   # Public: Execute query for a given test at Slicing Dice API.
   #
   # query_type - String containing the name of the query that will be
@@ -219,7 +283,11 @@ class SlicingDiceTester
   # test - Hash containing test name, columns metadata, data to be
   #   inserted, query, and expected results.
   def execute_query(query_type, test)
-    query_data = translate_column_names(test['query'])
+    if @per_test_insert
+      query_data = translate_column_names(test['query'])
+    else
+      query_data = test['query']
+    end
     puts '  Querying'
 
     if @verbose
@@ -238,6 +306,8 @@ class SlicingDiceTester
       result = @client.result(query_data)
     elsif query_type == 'score'
       result = @client.score(query_data)
+    elsif query_type == 'sql'
+      result = @client.sql(query_data)
     end
 
     result
@@ -253,13 +323,14 @@ def main
     'top_values',
     'aggregation',
     'result',
-    'score'
+    'score',
+    'sql'
   ]
 
   # Testing class with demo API key
   # To get a new Demo API key visit: http://panel.slicingdice.com/docs/#api-details-api-connection-api-keys-demo-key
   sd_tester = SlicingDiceTester.new(
-    api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vOThtIiwicGVybWlzc2lvbl9sZXZlbCI6MywicHJvamVjdF9pZCI6MjU5LCJjbGllbnRfaWQiOjEwfQ.pVXws7Dcz4qLAJ1n_Pu1l4nC3NuxQVocrmBY6wU2UJw',
+    api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiIxNTE4NjA3ODQ0NDAzIiwicGVybWlzc2lvbl9sZXZlbCI6MywicHJvamVjdF9pZCI6NDY5NjYsImNsaWVudF9pZCI6OTUxfQ.S6LCWQDcLS1DEFy3lsqk2jTGIe5rJ5fsQIvWuuFBdkw',
     verbose=false)
 
   begin
