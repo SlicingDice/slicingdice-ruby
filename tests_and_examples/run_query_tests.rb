@@ -60,12 +60,12 @@ class SlicingDiceTester
     @per_test_insert = test_data[0].key?("insert")
     
     if !@per_test_insert
-      # insertion_data = load_test_data(query_type, suffix="_insert")
-      # insertion_data.each do |insert_command|
-      #   @client.insert(insert_command)
-      # end
+      insertion_data = load_test_data(query_type, suffix="_insert")
+      insertion_data.each do |insert_command|
+        @client.insert(insert_command)
+      end
 
-      # sleep @sleep_time
+      sleep @sleep_time
     end
 
     test_data.each_with_index do |test, i|
@@ -216,7 +216,7 @@ class SlicingDiceTester
         next
       end
 
-      if value != result[key]
+      if !compare_values(value, result[key])
         @num_fails += 1
         @failed_tests.push(test['name'])
 
@@ -229,6 +229,51 @@ class SlicingDiceTester
 
     @num_successes += 1
     puts "  Status: Passed"
+  end
+
+  def compare_values(expected, got)
+    if expected.is_a?(Hash)
+      if !got.is_a?(Hash)
+        return false
+      end
+
+      if expected.length != got.length
+        return false
+      end
+
+      expected.each do |key, value|
+        got_value = got[key]
+        if !compare_values(value, got_value)
+          return false
+        end
+      end
+
+      return true
+    elsif expected.is_a?(Array)
+      if !got.is_a?(Array)
+        return false
+      end
+
+      if expected.length != got.length
+        return false
+      end
+
+      expected.each do |value|
+        has_value = false
+        got.each do |value_got|
+          if compare_values(value, value_got)
+            has_value = true
+          end
+        end
+        if !has_value
+          return false
+        end
+      end
+
+      return true
+    end
+
+    return expected == got
   end
 
   # Public: Execute query for a given test at Slicing Dice API.
@@ -273,12 +318,12 @@ end
 def main
   # SlicingDice queries to be tested. Must match the JSON file name.
   query_types = [
-    # 'count_entity',
-    # 'count_event',
-    # 'top_values',
-    # 'aggregation',
-    # 'result',
-    # 'score',
+    'count_entity',
+    'count_event',
+    'top_values',
+    'aggregation',
+    'result',
+    'score',
     'sql'
   ]
 
