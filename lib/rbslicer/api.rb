@@ -64,13 +64,18 @@ module Rbslicer
     # data(Hash) - A Hash to send in request
     #
     # Returns a request result
-    def make_request(url, req_type, key_level,  data = nil)
+    def make_request(url, req_type, key_level, data = nil, sql = false)
       check_key key_level
+      content_type = 'application/json'
+
+      if sql
+        content_type = 'application/sql'
+      end
       headers = {
-        'Content-Type' => 'application/json',
+        'Content-Type' => content_type,
         'Authorization' => @api_key
       }
-      @req = @requester.run(url, headers, req_type, data=data)
+      @req = @requester.run(url, headers, req_type, data=data, sql = sql)
       handler_request!
     end
 

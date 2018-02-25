@@ -37,7 +37,8 @@ METHODS = {
   query_data_extraction_result: '/data_extraction/result/',
   query_data_extraction_score: '/data_extraction/score/',
   query_saved: '/query/saved/',
-  database: '/database/'
+  database: '/database/',
+  query_sql: '/query/sql/'
 }.freeze
 
 # Public: A ruby interface to SlicingDice API
@@ -63,27 +64,18 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
       read_key = options.fetch(:read_key, nil)
       write_key = options.fetch(:write_key, nil)
       timeout = options.fetch(:timeout, 60)
-      uses_test_endpoint = options.fetch(:uses_test_endpoint, false)
       base_url= options.fetch(:base_url, BASE_URL)
     super(master_key, custom_key, read_key, write_key, timeout)
     @list_query_types = [
       "count/entity", "count/event", "count/entity/total",
-      "aggregation", "top_values"]
+      "aggregation", "top_values", "sql"]
     if base_url.nil?
       @base_url = BASE_URL
     else
       @base_url = base_url
     end
-    @uses_test_endpoint = uses_test_endpoint
   end
 
-  def wrapper_test()
-    base_url = @base_url
-    if @uses_test_endpoint
-      base_url += "/test"
-    end
-    return base_url
-  end
   # Public: Create column in SlicingDice API
   #
   # query - A Hash in the SlicingDice column format
@@ -104,7 +96,6 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # Returns a hash with api result
   def create_column(query)
-    base_url = wrapper_test()
     if query.kind_of?(Array)
       query.each { |q| column_create(q) }
     else
@@ -113,18 +104,16 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   end
 
   def column_create(query)
-    base_url = wrapper_test()
     sd_validator = Utils::ColumnValidator.new(query)
     if sd_validator.validator
-      url = base_url + METHODS[:column]
+      url = @base_url + METHODS[:column]
       make_request(url, "post", 2, data= query)
     end
   end
 
   # Public: Get all columns created on SlicingDice API
   def get_columns()
-    base_url = wrapper_test()
-    url = base_url + METHODS[:column]
+    url = @base_url + METHODS[:column]
     make_request url, "get", 2
   end
 
@@ -144,18 +133,16 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # Returns a hash with api result
   def insert(data)
-    base_url = wrapper_test()
     sd_validator = Utils::InsertValidator.new(data)
     if sd_validator.validator
-      url = base_url + METHODS[:insert]
+      url = @base_url + METHODS[:insert]
       make_request(url, "post", 1, data = data)
     end
   end
 
   # Public: Get information about current database
   def get_database()
-    base_url = wrapper_test()
-    url = base_url + METHODS[:database]
+    url = @base_url + METHODS[:database]
     make_request url, "get", 2
   end
 
@@ -204,8 +191,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # Returns a count entity query result
   def count_entity(query)
-    base_url = wrapper_test()
-    url = base_url + METHODS[:query_count_entity]
+    url = @base_url + METHODS[:query_count_entity]
     count_query_wrapper(url, query)
   end
 
@@ -216,8 +202,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # Returns a count entity total query result
   def count_entity_total(tables=[])
-    base_url = wrapper_test()
-    url = base_url + METHODS[:query_count_entity_total]
+    url = @base_url + METHODS[:query_count_entity_total]
 
     query = {
       "tables" => tables
@@ -232,8 +217,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # Returns a count event query result
   def count_event(query)
-    base_url = wrapper_test()
-    url = base_url + METHODS[:query_count_event]
+    url = @base_url + METHODS[:query_count_event]
     count_query_wrapper(url, query)
   end
 
@@ -243,8 +227,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # Returns a aggregation query result
   def aggregation(query)
-    base_url = wrapper_test()
-    url = base_url + METHODS[:query_aggregation]
+    url = @base_url + METHODS[:query_aggregation]
     if !query.key?("query")
       raise Exceptions::InvalidQueryException, 'The aggregation query must '\
                                                'have \'query\' property.'
@@ -263,8 +246,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # Returns a top values query result
   def top_values(query)
-    base_url = wrapper_test()
-    url = base_url + METHODS[:query_top_values]
+    url = @base_url + METHODS[:query_top_values]
     sd_validator = Utils::QueryTopValuesValidator.new(query)
     if sd_validator.validator
       make_request(url, "post", 0, data=query)
@@ -278,8 +260,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # Returns a Hash with ids that exists and that don't exits
   def exists_entity(ids, table=nil)
-    base_url = wrapper_test()
-    url = base_url + METHODS[:query_exists_entity]
+    url = @base_url + METHODS[:query_exists_entity]
     if ids.length > 100
       raise Exceptions::MaxLimitExceptions, 'The query exists entity must '\
                                             'have up to 100 ids.'
@@ -299,8 +280,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # Returns a hash with saved query
   def get_saved_queries()
-    base_url = wrapper_test()
-    url = base_url + METHODS[:query_saved]
+    url = @base_url + METHODS[:query_saved]
     make_request url, "get", 2
   end
 
@@ -310,8 +290,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # Returns a hash with saved query
   def get_saved_query(query_name)
-    base_url = wrapper_test()
-    url = base_url + METHODS[:query_saved] + query_name
+    url = @base_url + METHODS[:query_saved] + query_name
     make_request url, "get", 0
   end
 
@@ -321,8 +300,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # Returns a hash with saved query
   def delete_saved_query(query_name)
-    base_url = wrapper_test()
-    url = base_url + METHODS[:query_saved] + query_name
+    url = @base_url + METHODS[:query_saved] + query_name
     make_request url, "delete", 2
   end
 
@@ -332,8 +310,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # Returns a hash with saved query created and SUCCESS status
   def create_saved_query(query)
-    base_url = wrapper_test()
-    url = base_url + METHODS[:query_saved]
+    url = @base_url + METHODS[:query_saved]
     saved_query_wrapper url, query
   end
 
@@ -344,8 +321,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # Returns a hash with saved query updated and SUCCESS status
   def update_saved_query(name, query)
-    base_url = wrapper_test()
-    url = base_url + METHODS[:query_saved] + name
+    url = @base_url + METHODS[:query_saved] + name
     saved_query_wrapper(url, query, update=true)
   end
 
@@ -353,8 +329,7 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # query(Hash) - A Hash to send in request
   def result(query)
-    base_url = wrapper_test()
-    url = base_url + METHODS[:query_data_extraction_result]
+    url = @base_url + METHODS[:query_data_extraction_result]
     data_extraction_wrapper(url, query)
   end
 
@@ -362,10 +337,12 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   #
   # query(Hash) - A Hash to send in request
   def score(query)
-    base_url = wrapper_test()
-    url = base_url + METHODS[:query_data_extraction_score]
+    url = @base_url + METHODS[:query_data_extraction_score]
     data_extraction_wrapper(url, query)
   end
 
-  private :wrapper_test
+  def sql(query)
+    url = @base_url + METHODS[:query_sql]
+    make_request(url, "post", 0, data=query, sql=true)
+  end
 end
