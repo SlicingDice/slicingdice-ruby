@@ -197,15 +197,15 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
 
   # Public: Make a total query in SlicingDice API
   #
-  # tables(Hash) - A Hash to send in request containing the tables in which
+  # dimensions(Hash) - A Hash to send in request containing the dimensions in which
   #                the total query will be performed
   #
   # Returns a count entity total query result
-  def count_entity_total(tables=[])
+  def count_entity_total(dimensions=[])
     url = @base_url + METHODS[:query_count_entity_total]
 
     query = {
-      "tables" => tables
+      "dimensions" => dimensions
     }
 
     make_request(url, "post", 0, data=query)
@@ -256,10 +256,10 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   # Public: Check if a list of entities exists in SlicingDice API
   #
   # ids(Array) - A Array with ids to be checked
-  # table(String) - In which table entities check be checked
+  # dimension(String) - In which dimension entities check be checked
   #
   # Returns a Hash with ids that exists and that don't exits
-  def exists_entity(ids, table=nil)
+  def exists_entity(ids, dimension=nil)
     url = @base_url + METHODS[:query_exists_entity]
     if ids.length > 100
       raise Exceptions::MaxLimitExceptions, 'The query exists entity must '\
@@ -268,8 +268,8 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
     query = {
       'ids' => ids
     }
-    if table.nil?
-      query['table'] = table
+    if dimension.nil?
+      query['dimension'] = dimension
     end
     make_request(url, "post", 0, data=query)
   end
