@@ -37,14 +37,14 @@ into the system, the answer should be a list whose only element is
 require 'rbslicer'
 
 # Configure the client
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: true)
+client = SlicingDice.new(master_key: "API_KEY")
 
 # Inserting data
 insert_data = {
     "user50@slicingdice.com" => {
         "age" => 22
     },
-    "auto-create" => ["table", "column"]
+    "auto-create" => ["dimension", "column"]
 }
 client.insert(insert_data)
 
@@ -75,14 +75,13 @@ puts client.count_entity(query_data)
 
 ### Constructor
 
-`initialize(master_key: nil, custom_key: nil, read_key: nil, write_key: nil, timeout: 60, use_ssl: true, uses_test_endpoint: false)`
+`initialize(master_key: nil, custom_key: nil, read_key: nil, write_key: nil, timeout: 60, use_ssl: true)`
 * `master_key (String)` - [API key](https://docs.slicingdice.com/docs/api-keys) to authenticate requests with the SlicingDice API.
 * `custom_key (String)` - [API key](https://docs.slicingdice.com/docs/api-keys) to authenticate requests with the SlicingDice API.
 * `read_key (String)` - [API key](https://docs.slicingdice.com/docs/api-keys) to authenticate requests with the SlicingDice API.
 * `write_key (String)` - [API key](https://docs.slicingdice.com/docs/api-keys) to authenticate requests with the SlicingDice API.
 * `use_ssl (Bool)` - Define if the requests verify SSL for HTTPS requests.
 * `timeout (Fixnum)` - Amount of time, in seconds, to wait for results for each request.
-* `uses_test_endpoint (Bool)` - If false the client will send requests to production end-point, otherwise to tests end-point.
 
 ### `get_database()`
 Get information about current database. This method corresponds to a `GET` request at `/database`.
@@ -91,7 +90,7 @@ Get information about current database. This method corresponds to a `GET` reque
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 
 puts client.get_database()
 ```
@@ -102,7 +101,7 @@ puts client.get_database()
 {
     "name": "Database 1",
     "description": "My first database",
-    "tables": [
+    "dimensions": [
     	"default",
         "users"
     ],
@@ -118,7 +117,7 @@ Get all created columns, both active and inactive ones. This method corresponds 
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 puts client.get_columns()
 ```
 
@@ -157,7 +156,7 @@ Create a new column. This method corresponds to a [POST request at /column](http
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 column = {
   "name" => "Year",
   "api-name" => "year",
@@ -184,7 +183,7 @@ Insert data to existing entities or create new entities, if necessary. This meth
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 insert_data = {
   "user1@slicingdice.com" => {
     "car-model" => "Ford Ka",
@@ -218,7 +217,7 @@ insert_data = {
       "date" => "2016-08-17T13:23:47+00:00"
     }
   },
-  "auto-create" => ["table", "column"]
+  "auto-create" => ["dimension", "column"]
 }
 puts client.insert(insert_data)
 ```
@@ -234,14 +233,14 @@ puts client.insert(insert_data)
 }
 ```
 
-### `exists_entity(ids, table)`
-Verify which entities exist in a table (uses `default` table if not provided) given a list of entity IDs. This method corresponds to a [POST request at /query/exists/entity](https://docs.slicingdice.com/docs/exists).
+### `exists_entity(ids, dimension)`
+Verify which entities exist in a dimension (uses `default` dimension if not provided) given a list of entity IDs. This method corresponds to a [POST request at /query/exists/entity](https://docs.slicingdice.com/docs/exists).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 ids = [
   "user1@slicingdice.com",
   "user2@slicingdice.com",
@@ -273,7 +272,7 @@ Count the number of inserted entities in the whole database. This method corresp
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 
 puts client.count_entity_total()
 ```
@@ -290,18 +289,18 @@ puts client.count_entity_total()
 }
 ```
 
-### `count_entity_total(tables)`
-Count the total number of inserted entities in the given tables. This method corresponds to a [POST request at /query/count/entity/total](https://docs.slicingdice.com/docs/total#section-counting-specific-tables).
+### `count_entity_total(dimensions)`
+Count the total number of inserted entities in the given dimensions. This method corresponds to a [POST request at /query/count/entity/total](https://docs.slicingdice.com/docs/total#section-counting-specific-tables).
 
 #### Request example
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 
-tables = ["default"]
+dimensions = ["default"]
 
-puts client.count_entity_total(tables)
+puts client.count_entity_total(dimensions)
 ```
 
 #### Output example
@@ -323,7 +322,7 @@ Count the number of entities matching the given query. This method corresponds t
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 query = [
     {
         'query-name' => 'corolla-or-fit',
@@ -377,7 +376,7 @@ Count the number of occurrences for time-series events matching the given query.
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 query = [
     {
         'query-name' => 'test-drives-in-ny',
@@ -433,7 +432,7 @@ Return the top values for entities matching the given query. This method corresp
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 query = {
   "car-year" => {
     "year" => 2
@@ -491,7 +490,7 @@ Return the aggregation of all columns in the given query. This method correspond
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 query = {
   "query" => [
     {
@@ -543,7 +542,7 @@ Get all saved queries. This method corresponds to a [GET request at /query/saved
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 puts client.get_saved_queries()
 ```
 
@@ -594,7 +593,7 @@ Create a saved query at SlicingDice. This method corresponds to a [POST request 
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 query = {
   "name" => "my-saved-query",
   "type" => "count/entity",
@@ -648,7 +647,7 @@ Update an existing saved query at SlicingDice. This method corresponds to a [PUT
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 new_query = {
   "type" => "count/entity",
   "query" => [
@@ -700,7 +699,7 @@ Executed a saved query at SlicingDice. This method corresponds to a [GET request
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 puts client.get_saved_query("my-saved-query")
 ```
 
@@ -737,7 +736,7 @@ Delete a saved query at SlicingDice. This method corresponds to a [DELETE reques
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 puts client.delete_saved_query("my-saved-query")
 ```
 
@@ -774,7 +773,7 @@ Retrieve inserted values for entities matching the given query. This method corr
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 query = {
   "query" => [
     {
@@ -823,7 +822,7 @@ Retrieve inserted values as well as their relevance for entities matching the gi
 
 ```ruby
 require 'rbslicer'
-client = SlicingDice.new(master_key: "API_KEY", uses_test_endpoint: false)
+client = SlicingDice.new(master_key: "API_KEY")
 query = {
   "query" => [
     {
@@ -864,6 +863,32 @@ puts client.score(query)
       }
    },
    "page":1,
+   "status":"success"
+}
+```
+
+### `sql(query)`
+Retrieve inserted values using a SQL syntax. This method corresponds to a POST request at /query/sql.
+
+#### Request example
+
+```go
+require 'rbslicer'
+client = SlicingDice.new(master_key: "API_KEY")
+query = "SELECT COUNT(*) FROM default WHERE age BETWEEN 0 AND 49"
+
+puts client.sql(query)
+```
+
+#### Output example
+
+```json
+{
+   "took":0.063,
+   "result":[
+       {"COUNT": 3}
+   ],
+   "count":1,
    "status":"success"
 }
 ```
