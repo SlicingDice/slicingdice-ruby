@@ -870,12 +870,21 @@ puts client.score(query)
 ### `sql(query)`
 Retrieve inserted values using a SQL syntax. This method corresponds to a POST request at /query/sql.
 
-#### Request example
+#### Query statement
 
-```go
+```ruby
 require 'rbslicer'
 client = SlicingDice.new(master_key: "API_KEY")
 query = "SELECT COUNT(*) FROM default WHERE age BETWEEN 0 AND 49"
+
+puts client.sql(query)
+```
+
+#### Insert statement
+```ruby
+require 'rbslicer'
+client = SlicingDice.new(master_key: "API_KEY")
+query = "INSERT INTO default([entity-id], name, age) VALUES(1, 'john', 10)"
 
 puts client.sql(query)
 ```
