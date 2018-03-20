@@ -33,7 +33,7 @@ class SlicingDiceTester
     @column_translation = {}
 
     # Sleep time in seconds
-    @sleep_time = 5
+    @sleep_time = 10
     # Directory containing examples to test
     @path = 'examples/'
     # Examples file format
@@ -82,6 +82,7 @@ class SlicingDiceTester
         if @per_test_insert
           create_columns test
           insert_data test
+          sleep @sleep_time
         end
         result = execute_query(query_type, test)
       rescue StandardError => e
