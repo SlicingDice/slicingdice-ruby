@@ -143,12 +143,12 @@ class SlicingDiceTester
   # column(Hash) - Hash containing column data, such as "name" and
   # "api-name".
   def append_timestamp_to_column_name(column)
-    old_name = "\"#{column['api-name']}\""
+    old_name = "#{column['api-name']}"
 
     timestamp = get_timestamp()
     column['name'] += timestamp
     column['api-name'] += timestamp
-    new_name = "\"#{column['api-name']}\""
+    new_name = "#{column['api-name']}"
 
     @column_translation[old_name] = new_name
   end
