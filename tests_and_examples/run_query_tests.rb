@@ -46,6 +46,7 @@ class SlicingDiceTester
     @verbose = verbose
 
     @per_test_insert = false
+    @insert_sql_data = false
   end
 
   attr_accessor :num_successes, :num_fails, :num_fails, :failed_tests
@@ -59,7 +60,7 @@ class SlicingDiceTester
 
     @per_test_insert = test_data[0].key?("insert")
     
-    if !@per_test_insert
+    if !@per_test_insert and @insert_sql_data
       insertion_data = load_test_data(query_type, suffix="_insert")
       insertion_data.each do |insert_command|
         @client.insert(insert_command)
@@ -331,7 +332,7 @@ def main
   # Testing class with demo API key
   # To get a new Demo API key visit: http://panel.slicingdice.com/docs/#api-details-api-connection-api-keys-demo-key
   sd_tester = SlicingDiceTester.new(
-    api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vNzY0bSIsInBlcm1pc3Npb25fbGV2ZWwiOjMsInByb2plY3RfaWQiOjIwNzY0LCJjbGllbnRfaWQiOjEwfQ.LdACS48Ps0hrJ87KD5PAEfpEU4k_abbdhzaFF_EyEus',
+    api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiIxNTIzMDY1ODQyNjU4IiwicGVybWlzc2lvbl9sZXZlbCI6MywicHJvamVjdF9pZCI6MzA1MDgsImNsaWVudF9pZCI6MjAzfQ.R3oKwcA9XoQcW_QBxcvqUNJS44AqCKjoK2Hz5uBnxmU',
     verbose=false)
 
   begin
