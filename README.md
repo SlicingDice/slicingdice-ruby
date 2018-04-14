@@ -1,9 +1,12 @@
 # SlicingDice Official Ruby Client (v2.0.2)
-### Build Status: [![CircleCI](https://circleci.com/gh/SlicingDice/slicingdice-ruby.svg?style=svg)](https://circleci.com/gh/SlicingDice/slicingdice-ruby)
 
-Official Ruby client for [SlicingDice](http://www.slicingdice.com/), Data Warehouse and Analytics Database as a Service.  
+Official Ruby client for [SlicingDice - Data Warehouse and Analytics Database as a Service](https://www.slicingdice.com/).
 
-[SlicingDice](http://www.slicingdice.com/) is a serverless, API-based, easy-to-use and really cost-effective alternative to Amazon Redshift and Google BigQuery.
+[SlicingDice](http://www.slicingdice.com/) is a serverless, SQL & API-based, easy-to-use and really cost-effective alternative to Amazon Redshift and Google BigQuery.
+
+### Build Status: [![CircleCI](https://circleci.com/gh/SlicingDice/slicingdice-ruby/tree/master.svg?style=svg)](https://circleci.com/gh/SlicingDice/slicingdice-ruby/tree/master)
+
+### Code Quality: [![Codacy Badge](https://api.codacy.com/project/badge/Grade/545606dbccaf4154947e9461c4fcfa1b)](https://www.codacy.com/app/SimbioseVentures/slicingdice-ruby?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=SlicingDice/slicingdice-ruby&amp;utm_campaign=Badge_Grade)
 
 ## Documentation
 
