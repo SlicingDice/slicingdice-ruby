@@ -332,7 +332,7 @@ def main
   # Testing class with demo API key
   # To get a new Demo API key visit: http://panel.slicingdice.com/docs/#api-details-api-connection-api-keys-demo-key
   sd_tester = SlicingDiceTester.new(
-    api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vNzk5bSIsInBlcm1pc3Npb25fbGV2ZWwiOjMsInByb2plY3RfaWQiOjIwNzk5LCJjbGllbnRfaWQiOjEwfQ.scrbCWgaFoGnJjCFiAf_l9f0pWKBczC0JTPXtMqA79w',
+    api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vNTk5bSIsInBlcm1pc3Npb25fbGV2ZWwiOjMsInByb2plY3RfaWQiOjIwNTk5LCJjbGllbnRfaWQiOjEwfQ.j726d3QyDbWLoTL45eR2sEUO5Yg1XVs9F6bUneIVW7Y',
     verbose=false)
 
   begin
