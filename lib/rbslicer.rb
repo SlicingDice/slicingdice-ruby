@@ -38,7 +38,7 @@ METHODS = {
   query_data_extraction_score: '/data_extraction/score/',
   query_saved: '/query/saved/',
   database: '/database/',
-  query_sql: '/query/sql/'
+  query_sql: '/sql/'
 }.freeze
 
 # Public: A ruby interface to SlicingDice API

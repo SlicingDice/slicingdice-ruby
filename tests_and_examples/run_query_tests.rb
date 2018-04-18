@@ -329,11 +329,12 @@ def main
     'sql'
   ]
 
+  api_key = ENV['SD_API_KEY'] || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vNTk5bSIsInBlcm1pc3Npb25fbGV2ZWwiOjMsInByb2plY3RfaWQiOjIwNTk5LCJjbGllbnRfaWQiOjEwfQ.j726d3QyDbWLoTL45eR2sEUO5Yg1XVs9F6bUneIVW7Y'
+
   # Testing class with demo API key
   # To get a new Demo API key visit: http://panel.slicingdice.com/docs/#api-details-api-connection-api-keys-demo-key
   sd_tester = SlicingDiceTester.new(
-    api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vNTk5bSIsInBlcm1pc3Npb25fbGV2ZWwiOjMsInByb2plY3RfaWQiOjIwNTk5LCJjbGllbnRfaWQiOjEwfQ.j726d3QyDbWLoTL45eR2sEUO5Yg1XVs9F6bUneIVW7Y',
-    verbose=false)
+    api_key=api_key, verbose=false)
 
   begin
     query_types.each{|query_type| sd_tester.run_tests(query_type)}
