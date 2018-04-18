@@ -33,7 +33,7 @@ class SlicingDiceTester
     @column_translation = {}
 
     # Sleep time in seconds
-    @sleep_time = 5
+    @sleep_time = 10
     # Directory containing examples to test
     @path = 'examples/'
     # Examples file format
@@ -46,6 +46,7 @@ class SlicingDiceTester
     @verbose = verbose
 
     @per_test_insert = false
+    @insert_sql_data = false
   end
 
   attr_accessor :num_successes, :num_fails, :num_fails, :failed_tests
@@ -59,7 +60,7 @@ class SlicingDiceTester
 
     @per_test_insert = test_data[0].key?("insert")
     
-    if !@per_test_insert
+    if !@per_test_insert and @insert_sql_data
       insertion_data = load_test_data(query_type, suffix="_insert")
       insertion_data.each do |insert_command|
         @client.insert(insert_command)
@@ -82,6 +83,7 @@ class SlicingDiceTester
         if @per_test_insert
           create_columns test
           insert_data test
+          sleep @sleep_time
         end
         result = execute_query(query_type, test)
       rescue StandardError => e
@@ -327,11 +329,12 @@ def main
     'sql'
   ]
 
+  api_key = ENV['SD_API_KEY'] || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vNTk5bSIsInBlcm1pc3Npb25fbGV2ZWwiOjMsInByb2plY3RfaWQiOjIwNTk5LCJjbGllbnRfaWQiOjEwfQ.j726d3QyDbWLoTL45eR2sEUO5Yg1XVs9F6bUneIVW7Y'
+
   # Testing class with demo API key
   # To get a new Demo API key visit: http://panel.slicingdice.com/docs/#api-details-api-connection-api-keys-demo-key
   sd_tester = SlicingDiceTester.new(
-    api_key='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiIxNTE4NjA3ODQ0NDAzIiwicGVybWlzc2lvbl9sZXZlbCI6MywicHJvamVjdF9pZCI6NDY5NjYsImNsaWVudF9pZCI6OTUxfQ.S6LCWQDcLS1DEFy3lsqk2jTGIe5rJ5fsQIvWuuFBdkw',
-    verbose=false)
+    api_key=api_key, verbose=false)
 
   begin
     query_types.each{|query_type| sd_tester.run_tests(query_type)}
