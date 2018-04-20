@@ -273,9 +273,15 @@ class SlicingDiceTester
       end
 
       return true
+    elsif expected.is_a?(Float)
+      return float_is_close(expected, got)
     end
 
     return expected == got
+  end
+
+  def float_is_close(a, b, rel_tol=1e-09, abs_tol=0.0)
+    return (a - b).abs <= [rel_tol * [a.abs, b.abs].max, abs_tol].max
   end
 
   # Public: Execute query for a given test at Slicing Dice API.
