@@ -1,4 +1,4 @@
-# SlicingDice Official Ruby Client (v2.0.2)
+# SlicingDice Official Ruby Client (v2.0.3)
 
 Official Ruby client for [SlicingDice - Data Warehouse and Analytics Database as a Service](https://www.slicingdice.com/).
 
