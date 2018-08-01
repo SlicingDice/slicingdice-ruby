@@ -70,6 +70,7 @@ class SlicingDiceTester
     end
 
     test_data.each_with_index do |test, i|
+      _query_type = query_type
       empty_column_translation
 
       puts "(#{i + 1}/#{num_tests}) Executing test \"#{test['name']}\""
@@ -85,14 +86,73 @@ class SlicingDiceTester
           insert_data test
           sleep @sleep_time
         end
-        result = execute_query(query_type, test)
+        if query_type == "update" or query_type == "delete"
+          result_additional = run_additional_operations(query_type, test)
+          if !result_additional
+            next
+          end
+          _query_type = "count_entity"
+        end
+
+        result = execute_query(_query_type, test)
       rescue StandardError => e
         result = {"result" => {"error" => e.to_s}}
+        if query_type == "update" or query_type == "delete"
+          @num_fails += 1
+          @failed_tests.push(test['name'])
+
+          puts "  Result: #{result}"
+          puts "  Status: Failed"
+        end
       end
 
       compare_result(test, result)
       puts
     end
+  end
+
+  # Public Method used to run delete and update operations, this operations
+  # are executed before the query and the result comparison
+  def run_additional_operations(query_type, test)
+    query_data = translate_column_names(test['additional_operation'])
+    if query_type == 'delete'
+      puts "  Deleting"
+    else
+      puts "  Updating"
+    end 
+
+    if @verbose
+      puts "    - #{query_data}"
+    end
+    
+    result = nil
+
+    if query_type == 'delete'
+      result = @client.delete(query_data)
+    elsif query_type == 'update'
+      result = @client.update(query_data)
+    end
+
+    expected = translate_column_names(test['result_additional'])
+    expected.each do |key, value|
+      if value == 'ignore'
+        next
+      end
+
+      if !compare_values(value, result[key])
+        @num_fails += 1
+        @failed_tests.push(test['name'])
+
+        puts "  Expected: \"#{key}\": #{value}"
+        puts "  Result:   \"#{key}\": #{result[key]}"
+        puts "  Status: Failed"
+        return false
+      end
+    end
+     
+    self.num_successes += 1
+    print('  Status: Passed')
+    return true
   end
 
   # Public: Empty column translation table so tests don't intefere each other.
@@ -332,7 +392,9 @@ def main
     'aggregation',
     'result',
     'score',
-    'sql'
+    'sql',
+    'delete',
+    'update'
   ]
 
   api_key = ENV['SD_API_KEY'] || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfX3NhbHQiOiJkZW1vNTk5bSIsInBlcm1pc3Npb25fbGV2ZWwiOjMsInByb2plY3RfaWQiOjIwNTk5LCJjbGllbnRfaWQiOjEwfQ.j726d3QyDbWLoTL45eR2sEUO5Yg1XVs9F6bUneIVW7Y'
@@ -340,7 +402,7 @@ def main
   # Testing class with demo API key
   # To get a new Demo API key visit: http://panel.slicingdice.com/docs/#api-details-api-connection-api-keys-demo-key
   sd_tester = SlicingDiceTester.new(
-    api_key=api_key, verbose=false)
+    api_key=api_key, verbose=true)
 
   begin
     query_types.each{|query_type| sd_tester.run_tests(query_type)}
