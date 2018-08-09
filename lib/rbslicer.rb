@@ -38,7 +38,9 @@ METHODS = {
   query_data_extraction_score: '/data_extraction/score/',
   query_saved: '/query/saved/',
   database: '/database/',
-  query_sql: '/sql/'
+  query_sql: '/sql/',
+  delete: '/delete/',
+  update: '/update/'
 }.freeze
 
 # Public: A ruby interface to SlicingDice API
@@ -344,5 +346,15 @@ class SlicingDice < Rbslicer::SlicingDiceAPI
   def sql(query)
     url = @base_url + METHODS[:query_sql]
     make_request(url, "post", 0, data=query, sql=true)
+  end
+
+  def delete(query)
+    url = @base_url + METHODS[:delete]
+    make_request(url, "post", 2, data=query)
+  end
+
+  def update(query)
+    url = @base_url + METHODS[:update]
+    make_request(url, "post", 2, data=query)
   end
 end
