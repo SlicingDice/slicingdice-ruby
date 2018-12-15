@@ -45,8 +45,8 @@ module Utils
       @hash_data = hash_data
       @valid_type_columns =
         ["unique-id", "boolean", "string", "integer", "decimal",
-          "enumerated", "date", "integer-time-series",
-          "decimal-time-series", "string-time-series", "datetime"]
+          "enumerated", "date", "integer-event",
+          "decimal-event", "string-event", "datetime"]
     end
 
     # Public: Validates key 'name' in column
@@ -117,11 +117,11 @@ module Utils
 
     # Public: Check if column has a valid decimal types
     def validate_column_decimal_places
-      decimal_types = ["decimal", "decimal-time-series"]
+      decimal_types = ["decimal", "decimal-event"]
       unless decimal_types.include? @hash_data['type']
         raise Exceptions::InvalidColumnException,  'This column is only accepted'\
                                                   ' on type \'decimal\' or'
-                                                  ' decimal-time-series'
+                                                  ' decimal-event'
       end
     end
 
